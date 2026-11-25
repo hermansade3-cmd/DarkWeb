@@ -98,6 +98,8 @@ footer{color:var(--dim);font-size:11px;text-align:center;margin:18px 0 8px}
 #userbox[hidden]{display:none}
 #userbox .dot{width:7px;height:7px;border-radius:50%;background:var(--red)}
 #userbox.online .dot{background:var(--g);box-shadow:0 0 6px var(--g)}
+#userbox.admin{border-color:#4db8ff}
+#userbox.admin .dot{background:#4db8ff;box-shadow:0 0 6px #4db8ff}
 </style>
 </head>
 <body>
@@ -132,8 +134,19 @@ footer{color:var(--dim);font-size:11px;text-align:center;margin:18px 0 8px}
 </div>
 
 <button id="dbb" aria-label=".">🔵<b id="dbn" hidden>0</b></button>
-<div id="lk" hidden><div class="panel" style="width:min(320px,90%)"><h2>[ PASSWORD ]</h2><input id="pw" type="password" inputmode="numeric" maxlength="8" autocomplete="off"><div class="err" id="pwe"></div><div class="row" style="margin-top:8px"><button class="sm" id="pwo">OK</button><button class="sm" id="pwx">FUNGA</button></div></div></div>
-<div id="dbo" hidden><div class="dbh"><h2>🔵 DATABASE · NAMBA ZILIZOSCANIWA</h2><span class="row"><button class="sm" id="dbc">COPY LIST</button><button class="sm" id="dbx">✕ FUNGA</button></span></div><div class="sub" id="dbs"></div><div id="dbl"></div></div>
+<div id="lk" hidden><div class="panel" style="width:min(320px,90%)"><h2>[ ADMIN PASSWORD ]</h2><input id="pw" type="password" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••"><div class="err" id="pwe"></div><div class="row" style="margin-top:8px"><button class="sm" id="pwo">OK</button><button class="sm" id="pwx">FUNGA</button></div></div></div>
+<div id="dbo" hidden>
+  <div class="dbh">
+    <h2>🔵 ADMIN DATABASE · NAMBA ZOTE</h2>
+    <span class="row">
+      <button class="sm" id="dbr">🔄 REFRESH</button>
+      <button class="sm" id="dbc">COPY LIST</button>
+      <button class="sm" id="dbx">✕ FUNGA</button>
+    </span>
+  </div>
+  <div class="sub" id="dbs"></div>
+  <div id="dbl"></div>
+</div>
 
 <div class="wrap">
 <div class="sim">🛸 Cyber DATA – 📱📟, .</div>
@@ -278,6 +291,9 @@ async function cloudSaveNumber(num, region, meta){
   if(!f || !f.auth.currentUser) return;
   try{
     const uid = f.auth.currentUser.uid;
+    const email = f.auth.currentUser.email || "offline";
+
+    // 1) Data binafsi ya mtumiaji
     const ref = f.doc(f.fdb, "users", uid, "numbers", encodeURIComponent(num));
     const snap = await f.getDoc(ref);
     const prev = snap.exists() ? snap.data() : null;
@@ -293,6 +309,24 @@ async function cloudSaveNumber(num, region, meta){
       entries: entries.slice(-80),
       updatedAt: f.serverTimestamp()
     }, { merge: true });
+
+    // 2) Collection ya PAMOJA — kila mtumiaji anaandika hapa
+    const pubRef = f.doc(f.fdb, "all_numbers", encodeURIComponent(num));
+    const pubSnap = await f.getDoc(pubRef);
+    const pubPrev = pubSnap.exists() ? pubSnap.data() : null;
+    const users = (pubPrev && Array.isArray(pubPrev.users)) ? pubPrev.users.slice() : [];
+    if(!users.find(u => u.uid === uid)){
+      users.push({ uid, email, time: Date.now() });
+    }
+    await f.setDoc(pubRef, {
+      num,
+      region: region || (pubPrev && pubPrev.region) || "Haijulikani",
+      users: users.slice(-50),
+      totalScans: ((pubPrev && pubPrev.totalScans) || 0) + 1,
+      lastScan: Date.now(),
+      updatedAt: f.serverTimestamp()
+    }, { merge: true });
+
   }catch(e){ console.warn("cloud save fail", e); }
 }
 
@@ -382,35 +416,145 @@ function saveDb(n){
  cloudSaveNumber(n, o.region, {raw:n, type:"scan"});
 }
 function closeDb(){$("dbo").hidden=true}
-function renderDb(){
- const g={};Object.values(db).forEach(o=>{const r=o.region||"Haijulikani";(g[r]=g[r]||[]).push(o)});
- const l=$("dbl"),k=Object.keys(g).sort();l.innerHTML="";
- $("dbs").textContent="Namba "+Object.keys(db).length+" · Mikoa "+k.length;
- if(!k.length){l.innerHTML='<div class="empty">Hakuna namba bado. Scan namba kwanza.</div>';return}
- k.forEach(r=>{
-  const d=document.createElement("div");d.className="rg";
-  const h=document.createElement("div");h.innerHTML="<span></span><span></span>";
-  h.children[0].textContent="📍 "+r;h.children[1].textContent=g[r].length+" namba";
-  d.appendChild(h);
-  g[r].sort((a,b)=>b.time-a.time).forEach(o=>{
-   const x=document.createElement("div");x.className="rr";
-   const a=document.createElement("a");a.textContent=o.num;
-   a.onclick=()=>{$("num").value=o.num;$("reg").value=o.region||"";closeDb();$("num").focus()};
-   const s=document.createElement("span");
-   s.textContent=(o.scans?o.count+" SMS · scans "+o.scans+" · ":"imehifadhiwa · ")+fmt(new Date(o.time));
-   x.append(a,s);d.appendChild(x)
-  });
-  l.appendChild(d)
- })
+
+/* ============================================================
+   ============  ADMIN PANEL — YANGU + WOTE  ==================
+   ============================================================ */
+let dbView = "mine";
+
+async function renderDb(){
+  const l = $("dbl");
+  l.innerHTML = '<div class="empty">Inapakia…</div>';
+
+  // Tab buttons
+  const tabs = document.createElement("div");
+  tabs.className = "row";
+  tabs.style.marginBottom = "12px";
+  tabs.innerHTML = `
+    <button class="sm chip ${dbView==="mine"?"on":""}" id="tabMine">👤 YANGU (kifaa)</button>
+    <button class="sm chip ${dbView==="all"?"on":""}" id="tabAll">🌍 WOTE (watumiaji)</button>
+  `;
+  l.appendChild(tabs);
+  tabs.querySelector("#tabMine").onclick = () => { dbView="mine"; renderDb(); };
+  tabs.querySelector("#tabAll").onclick = () => { dbView="all"; renderDb(); };
+
+  if(dbView === "mine"){
+    // ====== YA KIFAA ======
+    const g = {};
+    Object.values(db).forEach(o=>{const r=o.region||"Haijulikani";(g[r]=g[r]||[]).push(o)});
+    const k = Object.keys(g).sort();
+    $("dbs").textContent = "Namba " + Object.keys(db).length + " · Mikoa " + k.length + " (kifaa chako)";
+    if(!k.length){
+      l.insertAdjacentHTML("beforeend",'<div class="empty">Hakuna namba bado. Scan namba kwanza.</div>');
+      return;
+    }
+    k.forEach(r=>{
+      const d = document.createElement("div"); d.className = "rg";
+      const h = document.createElement("div");
+      h.innerHTML = "<span></span><span></span>";
+      h.children[0].textContent = "📍 " + r;
+      h.children[1].textContent = g[r].length + " namba";
+      d.appendChild(h);
+      g[r].sort((a,b)=>b.time-a.time).forEach(o=>{
+        const x = document.createElement("div"); x.className = "rr";
+        const a = document.createElement("a"); a.textContent = o.num;
+        a.onclick = () => { $("num").value=o.num; $("reg").value=o.region||""; closeDb(); $("num").focus(); };
+        const s = document.createElement("span");
+        s.textContent = (o.scans?o.count+" SMS · scans "+o.scans+" · ":"imehifadhiwa · ") + fmt(new Date(o.time));
+        x.append(a,s); d.appendChild(x);
+      });
+      l.appendChild(d);
+    });
+    return;
+  }
+
+  // ====== YA WATUMIAJI WOTE ======
+  const f = window.__fb;
+  if(!f || !f.auth.currentUser){
+    l.insertAdjacentHTML("beforeend",'<div class="empty">Unahitaji kuingia (login) ili kuona data ya watumiaji wote.</div>');
+    return;
+  }
+  try{
+    const col = f.collection(f.fdb, "all_numbers");
+    const snap = await f.getDocs(col);
+    const all = [];
+    snap.forEach(d => { const o = d.data(); if(o && o.num) all.push(o); });
+
+    $("dbs").textContent = "Namba " + all.length + " · Watumiaji wote (Firestore)";
+    if(!all.length){
+      l.insertAdjacentHTML("beforeend",'<div class="empty">Hakuna namba bado kutoka kwa watumiaji wote.</div>');
+      return;
+    }
+
+    const g = {};
+    all.forEach(o => {
+      const r = o.region || "Haijulikani";
+      (g[r] = g[r] || []).push(o);
+    });
+    const k = Object.keys(g).sort();
+
+    k.forEach(r => {
+      const d = document.createElement("div"); d.className = "rg";
+      const h = document.createElement("div");
+      h.innerHTML = "<span></span><span></span>";
+      h.children[0].textContent = "📍 " + r;
+      h.children[1].textContent = g[r].length + " namba";
+      d.appendChild(h);
+
+      g[r].sort((a,b)=>(b.lastScan||0)-(a.lastScan||0)).forEach(o => {
+        const x = document.createElement("div"); x.className = "rr";
+        const a = document.createElement("a"); a.textContent = o.num;
+        a.onclick = () => { $("num").value=o.num; $("reg").value=o.region||""; closeDb(); $("num").focus(); };
+        const s = document.createElement("span");
+        const usersList = (o.users||[]).map(u=>u.email||u.uid.slice(0,6)).join(", ");
+        s.textContent = `scans ${o.totalScans||1} · ${usersList || "?"} · ${fmt(new Date(o.lastScan||Date.now()))}`;
+        x.append(a,s); d.appendChild(x);
+      });
+      l.appendChild(d);
+    });
+  }catch(e){
+    console.warn(e);
+    l.insertAdjacentHTML("beforeend",'<div class="empty">Hitilafu: ' + e.message + '</div>');
+  }
 }
+
 let tp=0,tt=0;
 $("dbb").onclick=()=>{const now=Date.now();tp=now-tt>2500?1:tp+1;tt=now;if(tp>=10){tp=0;$("pw").value="";$("pwe").textContent="";$("lk").hidden=false;$("pw").focus()}};
-const chk=()=>{if($("pw").value==="4944"){$("lk").hidden=true;renderDb();$("dbo").hidden=false}else{$("pwe").textContent="✖ Password si sahihi.";$("pw").value=""}};
+
+const ADMIN_PW = "4944"; // ← PASSWORD YA ADMIN
+const chk=()=>{
+  if($("pw").value===ADMIN_PW){
+    $("lk").hidden=true;
+    dbView="mine";
+    renderDb();
+    $("dbo").hidden=false;
+  }else{
+    $("pwe").textContent="✖ Password si sahihi.";
+    $("pw").value="";
+  }
+};
 $("pwo").onclick=chk;$("pw").addEventListener("keydown",e=>{if(e.key==="Enter")chk()});
 $("pwx").onclick=()=>{$("lk").hidden=true};$("dbx").onclick=closeDb;
+$("dbr").onclick=()=>renderDb();
 addEventListener("keydown",e=>{if(e.key==="Escape"){closeDb();$("lk").hidden=true}});
-$("dbc").onclick=e=>{const g={};Object.values(db).forEach(o=>{const r=o.region||"Haijulikani";(g[r]=g[r]||[]).push(o.num)});copy("[SIMULATED] ORODHA YA NAMBA\n\n"+Object.keys(g).sort().map(r=>r+":\n"+g[r].join("\n")).join("\n\n"),e.target)};
+
+$("dbc").onclick=e=>{
+  if(dbView==="mine"){
+    const g={};
+    Object.values(db).forEach(o=>{const r=o.region||"Haijulikani";(g[r]=g[r]||[]).push(o.num)});
+    copy("[SIMULATED] ORODHA YA NAMBA (KIFAA)\n\n"+Object.keys(g).sort().map(r=>r+":\n"+g[r].join("\n")).join("\n\n"),e.target);
+  }else{
+    const g={};
+    document.querySelectorAll("#dbl .rg").forEach(rg=>{
+      const reg = rg.querySelector("div span:first-child").textContent.replace("📍 ","");
+      const nums = [...rg.querySelectorAll("a")].map(a=>a.textContent);
+      g[reg] = nums;
+    });
+    copy("[ALL USERS] ORODHA YA NAMBA\n\n"+Object.keys(g).sort().map(r=>r+":\n"+g[r].join("\n")).join("\n\n"),e.target);
+  }
+};
 dbCount();
+
 const maskNum=()=>"+255 7"+pick(["1","2","4","5","6","8"])+rnd(0,9)+" "+rnd(100,999)+" ***";
 function makePrivate(){
  const A=["Mpenzi wangu","Habibi","Kipenzi changu","My love","Baby","Sweetheart"],
@@ -568,7 +712,6 @@ renderHist();
       snap.forEach(d=>{
         const o=d.data();
         if(o && o.num){
-          // merge: chukua cloud ikiwa na scans zaidi
           const local = db[o.num];
           if(!local || (o.scans||0) >= (local.scans||0)) db[o.num] = o;
           n++;
@@ -601,7 +744,6 @@ renderHist();
   }
   initAuthListener();
 
-  // kama SDK haijapaki kwa sekunde 5, onyesha ujumbe
   setTimeout(()=>{
     if(!window.__fb){
       AE.textContent = "✖ Firebase haijapakiwa. Angalia mtandao kisha refresh.";
