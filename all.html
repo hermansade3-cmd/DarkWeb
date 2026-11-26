@@ -60,7 +60,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -133,21 +133,20 @@
 
         async function fetchData() {
             try {
-                // 1. Ingia kimyakimya
+                // Hapa ndipo panapotatua tatizo: Tunaita signInAnonymously ili kuhakikisha tuna Auth
+                // Lakini kama tayari tumo ndani, haitatuingiza tena, itarudisha tu mtumiaji aliyepo.
                 await signInAnonymously(auth);
                 
-                // 2. Andaa swali la kusoma data
                 const q = query(collection(db, "all_numbers"), orderBy("timestamp", "desc"));
-
-                // 3. Vuta data MARA MOJA (getDocs) badala ya kusikiliza mabadiliko (onSnapshot)
                 const snapshot = await getDocs(q);
                 
-                // 4. Onyesha data
                 renderData(snapshot);
 
             } catch (error) {
                 console.error("Kosa la kusoma data: ", error);
-                if (error.message.includes("index")) {
+                
+                // Kama kosa ni la index, mpeleke mtumiaji kwenye link
+                if (error.message && error.message.includes("index")) {
                     showError("Kuna tatizo la Firestore Index. Tafadhali fungua console (F12) kuona link ya kuunda index.");
                 } else {
                     showError("Imeshindikana kupata taarifa. Angalia mtandao wako.");
@@ -155,8 +154,21 @@
             }
         }
 
-        // Anza kuvuta data mara tu ukurasa unapofunguka
-        fetchData();
+        // Hii ni muhimu sana: Tunangoja hadi Firebase ithibitishe kuwa mtumiaji yupo
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Mtumiaji amethibitishwa, sasa vuta data
+                fetchData();
+            } else {
+                // Kama haipo, jaribu kuingiza kimyakimya
+                signInAnonymously(auth).then(() => {
+                    fetchData();
+                }).catch((error) => {
+                    console.error("Imeshindikana kuingia: ", error);
+                    showError("Imeshindikana kuunganisha na Firebase. Angalia mtandao wako.");
+                });
+            }
+        });
     </script>
 </body>
 </html>
