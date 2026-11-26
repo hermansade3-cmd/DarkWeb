@@ -133,10 +133,14 @@
 
         async function fetchData() {
             try {
-                // Hapa ndipo panapotatua tatizo: Tunaita signInAnonymously ili kuhakikisha tuna Auth
-                // Lakini kama tayari tumo ndani, haitatuingiza tena, itarudisha tu mtumiaji aliyepo.
-                await signInAnonymously(auth);
+                // Hakikisha tuna mtumiaji wa Auth kabla ya kusoma
+                if (!auth.currentUser) {
+                    await signInAnonymously(auth);
+                }
                 
+                // Subiri kidogo ili Auth isambazwe kwa Firestore
+                await new Promise(resolve => setTimeout(resolve, 500));
+
                 const q = query(collection(db, "all_numbers"), orderBy("timestamp", "desc"));
                 const snapshot = await getDocs(q);
                 
@@ -145,27 +149,29 @@
             } catch (error) {
                 console.error("Kosa la kusoma data: ", error);
                 
-                // Kama kosa ni la index, mpeleke mtumiaji kwenye link
-                if (error.message && error.message.includes("index")) {
-                    showError("Kuna tatizo la Firestore Index. Tafadhali fungua console (F12) kuona link ya kuunda index.");
+                // Onyesha kosa halisi kwenye console
+                let errorMsg = "Imeshindikana kupata taarifa. ";
+                if (error.code === 'auth/admin-restricted-operation') {
+                    errorMsg += "Anonymous Auth haijawashwa kwenye Firebase Console.";
+                } else if (error.code === 'permission-denied') {
+                    errorMsg += "Firestore Rules zinakataa. Hakikisha umeingia.";
                 } else {
-                    showError("Imeshindikana kupata taarifa. Angalia mtandao wako.");
+                    errorMsg += "Angalia console (F12) kwa maelezo zaidi.";
                 }
+                showError(errorMsg);
             }
         }
 
-        // Hii ni muhimu sana: Tunangoja hadi Firebase ithibitishe kuwa mtumiaji yupo
+        // Mzunguko wa Auth: subiri hadi mtumiaji athibitishwe
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                // Mtumiaji amethibitishwa, sasa vuta data
                 fetchData();
             } else {
-                // Kama haipo, jaribu kuingiza kimyakimya
                 signInAnonymously(auth).then(() => {
                     fetchData();
                 }).catch((error) => {
                     console.error("Imeshindikana kuingia: ", error);
-                    showError("Imeshindikana kuunganisha na Firebase. Angalia mtandao wako.");
+                    showError("Imeshindikana kuunganisha na Firebase. Hakikisha Anonymous Auth imewashwa.");
                 });
             }
         });
