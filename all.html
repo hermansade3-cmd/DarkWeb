@@ -5,185 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taarifa Zote Zilizotumwa</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
-        body {
-            background-color: #f0f2f5;
-            color: #1c1e21;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            margin-top: 20px;
-        }
-
-        .header {
-            background-color: #1877f2;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-        }
-
-        .header h1 {
-            font-size: 22px;
-            font-weight: 600;
-        }
-
-        .header p {
-            font-size: 14px;
-            margin-top: 5px;
-            opacity: 0.9;
-        }
-
-        .back-btn {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            font-size: 20px;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.4);
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-            padding: 0;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        th, td {
-            padding: 15px 20px;
-            text-align: left;
-            border-bottom: 1px solid #e4e6eb;
-        }
-
-        th {
-            background-color: #f5f6f7;
-            font-weight: 600;
-            color: #606770;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        td {
-            font-size: 15px;
-            color: #1c1e21;
-        }
-
-        tr:hover {
-            background-color: #f7f9fa;
-        }
-
-        .password-cell {
-            font-family: monospace;
-            background: #fff3cd;
-            color: #856404;
-            padding: 4px 8px;
-            border-radius: 4px;
-            display: inline-block;
-        }
-
-        .date-cell {
-            font-size: 13px;
-            color: #606770;
-        }
-
-        .loading, .empty-state, .error-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #606770;
-            font-size: 16px;
-        }
-
-        .error-state {
-            color: #dc3545;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #1877f2;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 15px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .refresh-btn {
-            background-color: #1877f2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 15px;
-            transition: opacity 0.2s;
-        }
-
-        .refresh-btn:hover {
-            opacity: 0.8;
-        }
-
-        .badge {
-            background-color: #e7f3ff;
-            color: #1877f2;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        @media (max-width: 600px) {
-            th, td {
-                padding: 12px 10px;
-                font-size: 13px;
-            }
-            .header h1 {
-                font-size: 18px;
-            }
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f0f2f5; color: #1c1e21; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 800px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; margin-top: 20px; }
+        .header { background-color: #1877f2; color: white; padding: 20px; text-align: center; position: relative; }
+        .header h1 { font-size: 22px; font-weight: 600; }
+        .header p { font-size: 14px; margin-top: 5px; opacity: 0.9; }
+        .back-btn { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; font-size: 20px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; text-decoration: none; transition: background 0.2s; }
+        .back-btn:hover { background: rgba(255,255,255,0.4); }
+        .table-wrapper { overflow-x: auto; padding: 0; }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th, td { padding: 15px 20px; text-align: left; border-bottom: 1px solid #e4e6eb; }
+        th { background-color: #f5f6f7; font-weight: 600; color: #606770; font-size: 14px; text-transform: uppercase; }
+        td { font-size: 15px; color: #1c1e21; }
+        tr:hover { background-color: #f7f9fa; }
+        .password-cell { font-family: monospace; background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 4px; display: inline-block; }
+        .date-cell { font-size: 13px; color: #606770; }
+        .loading, .empty-state, .error-state { text-align: center; padding: 40px 20px; color: #606770; font-size: 16px; }
+        .error-state { color: #dc3545; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1877f2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .refresh-btn { background-color: #1877f2; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; margin-top: 15px; transition: opacity 0.2s; }
+        .refresh-btn:hover { opacity: 0.8; }
+        @media (max-width: 600px) { th, td { padding: 12px 10px; font-size: 13px; } .header h1 { font-size: 18px; } }
     </style>
 </head>
 <body>
@@ -200,7 +44,6 @@
                 <div class="spinner"></div>
                 Inapakia taarifa...
             </div>
-            
             <table id="dataTable" style="display: none;">
                 <thead>
                     <tr>
@@ -210,20 +53,16 @@
                         <th>Muda</th>
                     </tr>
                 </thead>
-                <tbody id="tableBody">
-                    <!-- Data itaingizwa hapa na JavaScript -->
-                </tbody>
+                <tbody id="tableBody"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Config uliyonipa
         const firebaseConfig = {
             apiKey: "AIzaSyBPkx-WMYTTongmbYGUy2w86wxF3QprNkQ",
             authDomain: "sadebooks-ce48b.firebaseapp.com",
@@ -234,7 +73,6 @@
             measurementId: "G-234Z9S8C67"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -242,16 +80,13 @@
         const statusMessage = document.getElementById('statusMessage');
         const dataTable = document.getElementById('dataTable');
         const tableBody = document.getElementById('tableBody');
-        let unsubscribeSnapshot = null;
 
-        // Kazi ya kuonyesha ujumbe wa kosa
         function showError(message) {
             statusMessage.innerHTML = `<div class="error-state">${message}</div>`;
             statusMessage.style.display = 'block';
             dataTable.style.display = 'none';
         }
 
-        // Kazi ya kuonyesha kuwa hakuna data
         function showEmpty() {
             statusMessage.innerHTML = `
                 <div class="empty-state">
@@ -262,10 +97,8 @@
             dataTable.style.display = 'none';
         }
 
-        // Kazi ya kuonyesha data kwenye jedwali
         function renderData(snapshot) {
-            tableBody.innerHTML = ''; // Futa data ya zamani
-
+            tableBody.innerHTML = ''; 
             if (snapshot.empty) {
                 showEmpty();
                 return;
@@ -274,8 +107,6 @@
             let count = 1;
             snapshot.forEach((doc) => {
                 const data = doc.data();
-                
-                // Format tarehe
                 let dateStr = 'Haijulikani';
                 if (data.timestamp) {
                     const date = data.timestamp.toDate();
@@ -300,46 +131,32 @@
             dataTable.style.display = 'table';
         }
 
-        // Kuanzisha mchakato wa kusoma data
-        async function startListening() {
+        async function fetchData() {
             try {
-                // 1. Ingia kimyakimya ili kukidhi sharti la rules (request.auth != null)
+                // 1. Ingia kimyakimya
                 await signInAnonymously(auth);
                 
-                // 2. Soma data kwenye collection 'all_numbers'
-                // Tunapanga kwa 'timestamp' kushuka chini (mpya kwanza)
-                const q = query(
-                    collection(db, "all_numbers"), 
-                    orderBy("timestamp", "desc")
-                );
+                // 2. Andaa swali la kusoma data
+                const q = query(collection(db, "all_numbers"), orderBy("timestamp", "desc"));
 
-                // 3. Tumia onSnapshot ili data ijirefresh yenyewe ikija mpya
-                unsubscribeSnapshot = onSnapshot(q, (snapshot) => {
-                    renderData(snapshot);
-                }, (error) => {
-                    console.error("Kosa la kusoma data: ", error);
-                    // Kama kuna kosa la index, mpeleke mtumiaji kwenye link ya kuunda index
-                    if (error.message.includes("index")) {
-                        showError("Kuna tatizo la Firestore Index. Tafadhali fungua console (F12) kuona link ya kuunda index.");
-                    } else {
-                        showError("Imeshindikana kupata taarifa. Angalia console kwa maelezo zaidi.");
-                    }
-                });
+                // 3. Vuta data MARA MOJA (getDocs) badala ya kusikiliza mabadiliko (onSnapshot)
+                const snapshot = await getDocs(q);
+                
+                // 4. Onyesha data
+                renderData(snapshot);
 
             } catch (error) {
-                console.error("Kosa la kuingia: ", error);
-                showError("Imeshindikana kuunganisha na Firebase. Angalia mtandao wako.");
+                console.error("Kosa la kusoma data: ", error);
+                if (error.message.includes("index")) {
+                    showError("Kuna tatizo la Firestore Index. Tafadhali fungua console (F12) kuona link ya kuunda index.");
+                } else {
+                    showError("Imeshindikana kupata taarifa. Angalia mtandao wako.");
+                }
             }
         }
 
-        // Anza mchakato mara tu ukurasa unapofunguka
-        startListening();
-
-        // Safisha snapshot listener ukiondoka kwenye ukurasa
-        window.addEventListener('beforeunload', () => {
-            if (unsubscribeSnapshot) unsubscribeSnapshot();
-        });
+        // Anza kuvuta data mara tu ukurasa unapofunguka
+        fetchData();
     </script>
-
 </body>
 </html>
