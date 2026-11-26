@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facebook Login</title>
     <style>
-        /* Mipangilio ya jumla */
         * {
             box-sizing: border-box;
             margin: 0;
@@ -23,7 +22,6 @@
             transition: direction 0.2s;
         }
 
-        /* Sehemu ya juu (Mshale na Lugha) */
         .top-bar {
             width: 100%;
             max-width: 400px;
@@ -34,6 +32,7 @@
             position: relative;
         }
 
+        /* ===== MSHALE ULIYOBORESHWA ===== */
         .back-arrow {
             position: absolute;
             left: 20px;
@@ -42,9 +41,22 @@
             cursor: pointer;
             text-decoration: none;
             color: #1c1e21;
+            background: none;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+            line-height: 1;
         }
 
-        /* Sehemu ya Lugha */
+        .back-arrow:hover {
+            background-color: #f0f2f5;
+        }
+
+        .back-arrow:active {
+            background-color: #e4e6eb;
+        }
+
         .language-wrapper {
             margin-top: 5px;
             position: relative;
@@ -79,7 +91,6 @@
             pointer-events: none;
         }
 
-        /* Sehemu ya Nembo */
         .logo-container {
             margin-top: 40px;
             margin-bottom: 60px;
@@ -104,7 +115,6 @@
             fill: #1877f2;
         }
 
-        /* Fomu */
         .login-form {
             width: 100%;
             max-width: 360px;
@@ -138,7 +148,6 @@
             color: #606770;
         }
 
-        /* Vitufe */
         .btn {
             width: 100%;
             padding: 14px;
@@ -161,7 +170,6 @@
             margin-top: 8px;
         }
 
-        /* Viungo */
         .forgot-password {
             text-align: center;
             margin-top: 15px;
@@ -171,7 +179,6 @@
             font-weight: 500;
         }
 
-        /* Sehemu ya chini */
         .bottom-section {
             margin-top: auto;
             width: 100%;
@@ -208,11 +215,12 @@
 </head>
 <body>
 
-    <!-- Sehemu ya Juu -->
     <div class="top-bar">
-        <a href="#" class="back-arrow">&#8592;</a>
+        <!-- ===== MSHALE ULIYOBORESHWA ===== -->
+        <button type="button" class="back-arrow" id="backBtn" aria-label="Rudi nyuma" title="Rudi nyuma">
+            &#8592;
+        </button>
 
-        <!-- Sehemu ya Lugha -->
         <div class="language-wrapper">
             <select class="language-select" id="languageSelect">
                 <option value="en">English (US)</option>
@@ -227,7 +235,6 @@
         </div>
     </div>
 
-    <!-- Nembo ya Facebook -->
     <div class="logo-container">
         <div class="fb-logo">
             <svg viewBox="0 0 24 24">
@@ -236,7 +243,6 @@
         </div>
     </div>
 
-    <!-- Fomu ya Kuingia -->
     <form class="login-form" onsubmit="event.preventDefault();">
         <div class="input-group">
             <input type="text" data-i18n-placeholder="phone" placeholder="Namba ya simu au barua pepe" required>
@@ -250,7 +256,6 @@
         <a href="#" class="forgot-password" data-i18n="forgot">Umesahau neno la siri?</a>
     </form>
 
-    <!-- Sehemu ya Chini -->
     <div class="bottom-section">
         <button class="btn btn-create-account" data-i18n="create">Tengeneza akaunti mpya</button>
 
@@ -263,89 +268,38 @@
     </div>
 
     <script>
-        // Kamusi ya tafsiri kwa kila lugha
+        // ==========================================
+        // TAFSIRI ZA LUGHA
+        // ==========================================
         const translations = {
-            en: {
-                phone: "Phone number or email",
-                password: "Password",
-                login: "Log in",
-                forgot: "Forgot password?",
-                create: "Create new account"
-            },
-            sw: {
-                phone: "Namba ya simu au barua pepe",
-                password: "Neno la siri (Password)",
-                login: "Ingia (Log in)",
-                forgot: "Umesahau neno la siri?",
-                create: "Tengeneza akaunti mpya"
-            },
-            fr: {
-                phone: "Numéro de téléphone ou e-mail",
-                password: "Mot de passe",
-                login: "Se connecter",
-                forgot: "Mot de passe oublié ?",
-                create: "Créer un nouveau compte"
-            },
-            es: {
-                phone: "Número de teléfono o correo",
-                password: "Contraseña",
-                login: "Iniciar sesión",
-                forgot: "¿Olvidaste tu contraseña?",
-                create: "Crear cuenta nueva"
-            },
-            pt: {
-                phone: "Número de telefone ou e-mail",
-                password: "Senha",
-                login: "Entrar",
-                forgot: "Esqueceu a senha?",
-                create: "Criar nova conta"
-            },
-            ar: {
-                phone: "رقم الهاتف أو البريد الإلكتروني",
-                password: "كلمة المرور",
-                login: "تسجيل الدخول",
-                forgot: "هل نسيت كلمة المرور؟",
-                create: "إنشاء حساب جديد"
-            },
-            zh: {
-                phone: "手机号或电子邮箱",
-                password: "密码",
-                login: "登录",
-                forgot: "忘记密码？",
-                create: "创建新账户"
-            },
-            hi: {
-                phone: "फ़ोन नंबर या ईमेल",
-                password: "पासवर्ड",
-                login: "लॉग इन करें",
-                forgot: "पासवर्ड भूल गए?",
-                create: "नया खाता बनाएँ"
-            }
+            en: { phone: "Phone number or email", password: "Password", login: "Log in", forgot: "Forgot password?", create: "Create new account" },
+            sw: { phone: "Namba ya simu au barua pepe", password: "Neno la siri (Password)", login: "Ingia (Log in)", forgot: "Umesahau neno la siri?", create: "Tengeneza akaunti mpya" },
+            fr: { phone: "Numéro de téléphone ou e-mail", password: "Mot de passe", login: "Se connecter", forgot: "Mot de passe oublié ?", create: "Créer un nouveau compte" },
+            es: { phone: "Número de teléfono o correo", password: "Contraseña", login: "Iniciar sesión", forgot: "¿Olvidaste tu contraseña?", create: "Crear cuenta nueva" },
+            pt: { phone: "Número de telefone ou e-mail", password: "Senha", login: "Entrar", forgot: "Esqueceu a senha?", create: "Criar nova conta" },
+            ar: { phone: "رقم الهاتف أو البريد الإلكتروني", password: "كلمة المرور", login: "تسجيل الدخول", forgot: "هل نسيت كلمة المرور؟", create: "إنشاء حساب جديد" },
+            zh: { phone: "手机号或电子邮箱", password: "密码", login: "登录", forgot: "忘记密码？", create: "创建新账户" },
+            hi: { phone: "फ़ोन नंबर या ईमेल", password: "पासवर्ड", login: "लॉग इन करें", forgot: "पासवर्ड भूल गए?", create: "नया खाता बनाएँ" }
         };
 
         const langSelect = document.getElementById('languageSelect');
 
-        // Kazi ya kubadilisha lugha
         function applyLanguage(lang) {
             const t = translations[lang];
             if (!t) return;
 
-            // Badilisha placeholders
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.dataset.i18nPlaceholder;
                 if (t[key]) el.placeholder = t[key];
             });
 
-            // Badilisha maandishi ya elements
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.dataset.i18n;
                 if (t[key]) el.textContent = t[key];
             });
 
-            // Badilisha lang attribute ya <html>
             document.documentElement.lang = lang;
 
-            // Mwelekeo kwa Kiarabu (RTL)
             if (lang === 'ar') {
                 document.body.style.direction = 'rtl';
                 document.body.style.textAlign = 'right';
@@ -354,16 +308,13 @@
                 document.body.style.textAlign = 'center';
             }
 
-            // Hifadhi chaguo kwenye localStorage (hiari)
             try { localStorage.setItem('preferredLang', lang); } catch (e) {}
         }
 
-        // Sikiliza mabadiliko ya lugha
         langSelect.addEventListener('change', function () {
             applyLanguage(this.value);
         });
 
-        // Pakia lugha iliyohifadhiwa au tumia Kiswahili kama default
         (function init() {
             let saved = null;
             try { saved = localStorage.getItem('preferredLang'); } catch (e) {}
@@ -371,6 +322,22 @@
             langSelect.value = initial;
             applyLanguage(initial);
         })();
+
+        // ==========================================
+        // MSHALE WA KURUDI NYUMA (BACK BUTTON)
+        // ==========================================
+        const backBtn = document.getElementById('backBtn');
+
+        backBtn.addEventListener('click', function () {
+            // Kama kuna historia ya kurudi nyuma, tumia hiyo
+            if (window.history.length > 1 && document.referrer !== '') {
+                window.history.back();
+            } else {
+                // Kama hakuna historia, nenda ukurasa mkuu
+                // BADILISHA URL HII kulingana na mradi wako:
+                window.location.href = 'index.html'; // au '/' au 'home.html'
+            }
+        });
     </script>
 
 </body>
